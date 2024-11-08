@@ -20,6 +20,7 @@ public class DemoController {
     @GetMapping("/")
     public ResponseEntity<List<String>> getDemo(){
         log.info("enter");
+        log.info("getDemo");
         return ResponseEntity.ok(service.getNames());
     }
 
