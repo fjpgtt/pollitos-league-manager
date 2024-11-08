@@ -1,4 +1,4 @@
-package com.iwaconsolti.league.demo.controller;
+/*package com.iwaconsolti.league.demo.controller;
 
 import com.iwaconsolti.league.demo.model.RequestDemo;
 import com.iwaconsolti.league.demo.service.DemoService;
@@ -17,12 +17,15 @@ public class DemoController {
 
     private final DemoService service;
 
+    public DemoController(DemoService service) {
+        this.service = service;
+    }
+
     @GetMapping("/")
     public ResponseEntity<List<String>> getDemo(){
         log.info("enter");
         return ResponseEntity.ok(service.getNames());
     }
-
 @PostMapping("/")
     public ResponseEntity<Void> postDemo(@RequestBody final RequestDemo demoRequest){
         log.info("Request {}", demoRequest);
@@ -30,3 +33,4 @@ public class DemoController {
     return ResponseEntity.noContent().build();
     }
 }
+*/
