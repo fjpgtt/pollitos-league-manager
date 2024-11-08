@@ -1,4 +1,4 @@
-package com.iwaconsolti.league;
+package com.iwaconsolti.league.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
