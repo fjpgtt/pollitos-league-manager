@@ -11,24 +11,24 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class Team {
+public class Leagues {
     private int ID;
     private String name;
-    private List<Player> players = new ArrayList<>();
+    private List<Team> teams = new ArrayList<>();
 
-    public void addPlayer(Player player){
-        players.add(player);
+    public void addTeam(Team team){
+        teams.add(team);
     }
 
-    public List<Player> getPlayers() {
-        return players;
+    public List<Team> getTeams() {
+        return teams;
     }
 
-    public void removePlayer(Player player){
-        players.remove(player);
+    public void removeTeam(Player team){
+        teams.remove(team);
     }
 
-    public Team(String name, int ID) {
+    public Leagues(String name, int ID) {
         this.name = name;
         this.ID = ID;
     }
@@ -36,5 +36,7 @@ public class Team {
     public String getName() {
         return name;
     }
+
+
 
 }
