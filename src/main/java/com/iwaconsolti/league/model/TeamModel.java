@@ -1,3 +1,4 @@
+
 package com.iwaconsolti.league.model;
 
 
@@ -7,8 +8,7 @@ import java.util.List;
 
 @Data
 public class    TeamModel {
-private int id;
-private String nombre;
-private List<String> jugadores;;
-
+    private int id;
+    private String nombre;
+    private List<PlayerModel> jugadores;
 }
