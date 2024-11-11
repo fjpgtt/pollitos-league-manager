@@ -11,8 +11,6 @@ import com.iwaconsolti.league.Config.MatchConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +24,6 @@ public class LeagueService {
     private final TeamConfig teamConfig;
     private final PlayerConfig playerConfig;
     private final LeagueConfig leagueConfig;
-    // Constructor con la inyección de dependencias
     @Autowired
     public LeagueService(MatchConfig matchConfig, TeamConfig teamConfig, PlayerConfig playerConfig, LeagueConfig leagueConfig) {
         //this.leagueList = new ArrayList<>();
@@ -57,12 +54,10 @@ public class LeagueService {
                 .collect(Collectors.toList());
         league.setJugadores(players);
 
-        // Agregar la liga a la lista
         leagueList.add(league);
         return league;
     }
 
-    // Método para obtener todas las ligas
     public List<LeagueModel> getAllLeagues() {
         return leagueList;
     }
