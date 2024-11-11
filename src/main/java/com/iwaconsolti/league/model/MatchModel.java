@@ -6,7 +6,8 @@ import java.util.List;
 
 @Data
 public class MatchModel {
-    private int idPartido;         // Identificador único del partido
+    private int idPartido;
+    private int idLiga;// Identificador único del partido
     private TeamModel equipoLocal; // Equipo local
     private TeamModel equipoVisitante; // Equipo visitante
     private int golesLocal;        // Goles anotados por el equipo local
