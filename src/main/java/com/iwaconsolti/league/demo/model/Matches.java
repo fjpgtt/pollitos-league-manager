@@ -1,14 +1,18 @@
 package com.iwaconsolti.league.demo.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Matches {
     private Long id;
-    private String team1;
-    private String team2;
+    private Team homeTeam;
+    private Team awayTeam;
+    private int homeScore;
+    private int awayScore;
+    @JsonBackReference
+    private League league;
 }

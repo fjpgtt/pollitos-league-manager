@@ -1,16 +1,24 @@
 package com.iwaconsolti.league.demo.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = {"players", "league"})
 public class Team {
     private Long id;
     private String name;
-    private List<Player> players;
+
+    @JsonManagedReference
+    private List<Player> players = new ArrayList<>();
+
+    @JsonBackReference
+    private League league;
 }

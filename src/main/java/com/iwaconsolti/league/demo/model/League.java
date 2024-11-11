@@ -1,16 +1,25 @@
 package com.iwaconsolti.league.demo.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
-@Data
-@AllArgsConstructor
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = {"teams", "matches"})
 public class League {
     private Long id;
-    private LeagueType name;
-    private Matches matches;
-    private Player player;
-    private Team team;
+    private String name;
+    private LeagueType type;
+    private int maxTeams;
+
+    @JsonManagedReference
+    private List<Team> teams = new ArrayList<>();
+
+    @JsonManagedReference
+    private List<Matches> matches = new ArrayList<>();
 }

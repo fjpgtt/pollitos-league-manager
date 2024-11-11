@@ -15,16 +15,16 @@ the populated will have at least 2 teams each one with 2 players already created
 There will be a limit of how many teams will be in a league, by the default it will be 10 but you can control that with a property
 
 We need to create the following endpoints (in each request you should indicate what is the league you want to modify):
-* Create team
-* Create player indicating the team it is part of
-* Create a match
-* Get all the teams
-* Get all the players from a team
-* Get all the matches from a team
-* Edit the player information
-* Edit the team information
-* Delete all the matches
-* Delete all the players of a team
+* Create team >>>>>>>>>>>
+* Create player indicating the team it is part of >>>>>>>>>>>
+* Create a match >>>>>>>>>>>
+* Get all the teams >>>>>>>>>>>
+* Get all the players from a team >>>>>>>>>>>
+* Get all the matches from a team 
+* Edit the player information >>>>>>>>>>>
+* Edit the team information >>>>>>>>>>>
+* Delete all the matches >>>>>>>>>>>
+* Delete all the players of a team >>>>>>>>>>>
 
 Criteria to evaluate:
 * Creation of beans
