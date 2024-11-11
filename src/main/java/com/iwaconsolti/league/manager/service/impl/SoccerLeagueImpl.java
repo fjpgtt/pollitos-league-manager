@@ -101,14 +101,10 @@ public class SoccerLeagueImpl implements ILeagues {
         return new ArrayList<>(matches);
     }
 
+
     @Override
     public List<Players> getPlayersTeam(Long teamId) {
-        for (Teams team : teams) {
-            if (team.getId().equals(teamId)) {
-                return new ArrayList<>(players);
-            }
-        }
-        return List.of();
+        return players.stream().filter(player -> player.getTeamId().equals(teamId)).collect(Collectors.toList());
     }
 
 

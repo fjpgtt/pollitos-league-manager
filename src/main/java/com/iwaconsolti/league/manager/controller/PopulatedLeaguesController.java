@@ -94,6 +94,7 @@ public class PopulatedLeaguesController {
     public void postConstruct() {
         Players player1 = new Players(1L, "Maradona", 1L);
         Players player2 = new Players(2L, "Bob", 2L);
+        Players player3 = new Players(3L, "Rene", 1L);
 
         soccerLeagues.savePlayers(player1);
         baseBallLeague.savePlayers(player1);
@@ -101,13 +102,18 @@ public class PopulatedLeaguesController {
         soccerLeagues.savePlayers(player2);
         baseBallLeague.savePlayers(player2);
         log.info("Player created, name: {}", player2.getName());
+        soccerLeagues.savePlayers(player3);
+        baseBallLeague.savePlayers(player3);
+        log.info("Player created, name: {}", player3.getName());
 
         List<Players> players = new ArrayList<>();
         players.add(player1);
-        players.add(player2);
+        players.add(player3);
+        List<Players> players2 = new ArrayList<>();
+        players2.add(player2);
 
         Teams team1 = new Teams(1L, "Los Atlas", players);
-        Teams team2 = new Teams(2L, "Equipo Maravilla", players);
+        Teams team2 = new Teams(2L, "Equipo Maravilla", players2);
 
         soccerLeagues.saveTeams(team1);
         baseBallLeague.saveTeams(team1);
