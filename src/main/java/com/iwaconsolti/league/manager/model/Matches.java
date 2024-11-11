@@ -1,23 +1,19 @@
 package com.iwaconsolti.league.manager.model;
 
-import com.fasterxml.jackson.databind.deser.DataFormatReaders;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 @Data
+@NoArgsConstructor
 public class Matches {
-    private Teams team;
-    private Long scoreTeam;
 
-    public Matches(Teams team, Long scoreTeam) {
-        this.team = team;
-        this.scoreTeam = scoreTeam;
-    }
+    private Teams team;
+    private Map <Long, Long> scoreTeam;
 
     public Matches(Matches match) {
         this.team = match.getTeam();
         this.scoreTeam = match.getScoreTeam();
     }
-
-    public Matches() {}
-
 }

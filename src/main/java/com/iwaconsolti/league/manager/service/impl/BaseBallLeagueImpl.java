@@ -4,18 +4,21 @@ import com.iwaconsolti.league.manager.model.Matches;
 import com.iwaconsolti.league.manager.model.Players;
 import com.iwaconsolti.league.manager.model.Teams;
 import com.iwaconsolti.league.manager.service.ILeagues;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-@Service
-public class SoccerLeague implements ILeagues {
+@Service("baseBallLeague")
+@Slf4j
+public class BaseBallLeagueImpl implements ILeagues {
 
-    private List<Players> players = new ArrayList<Players>();
-    private List<Teams> teams = new ArrayList<Teams>();
-    private List<Matches> matches = new ArrayList<Matches>();
+    private List<Players> players = new ArrayList<>();
+    private List<Teams> teams = new ArrayList<>();
+    private List<Matches> matches = new ArrayList<>();
 
     @Override
     public Players savePlayers(Players player) {
@@ -72,9 +75,20 @@ public class SoccerLeague implements ILeagues {
     }
 
     @Override
-    public List<Players> getAllPlayers() {
-        return new ArrayList<>(players);
+    public Players updatePlayer(Long id, Players player) {
+        Optional<Players> existingPlayer = findPlayers(id);
+        if (existingPlayer.isEmpty()) {
+            log.info("Player with id {} not found", id);
+            return player;
+        }
+
+        Players playerToUpdate = new Players(player);
+        playerToUpdate.setId(player.getId());
+        playerToUpdate.setName(player.getName());
+
+        return playerToUpdate;
     }
+
 
     @Override
     public List<Teams> getAllTeams() {
@@ -84,5 +98,15 @@ public class SoccerLeague implements ILeagues {
     @Override
     public List<Matches> getAllMatches() {
         return new ArrayList<>(matches);
+    }
+
+    @Override
+    public List<Players> getPlayersTeam(Long teamId) {
+        for (Teams team : teams) {
+            if (team.getId().equals(teamId)) {
+                return new ArrayList<>(players);
+            }
+        }
+        return List.of();
     }
 }

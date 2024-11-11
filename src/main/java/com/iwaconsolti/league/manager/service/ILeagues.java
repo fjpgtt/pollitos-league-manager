@@ -21,13 +21,16 @@ public interface ILeagues {
 
     Optional <Matches> findMatches(Teams team);
 
-    public List<Players> getAllPlayers();
+    Players updatePlayer(Long id, Players players);
 
 
-    public List<Teams> getAllTeams();
+    List<Teams> getAllTeams();
 
 
-    public List<Matches> getAllMatches();
+    List<Matches> getAllMatches();
+
+    List<Players> getPlayersTeam(Long teamId);
+
 
 
 }

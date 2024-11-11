@@ -1,28 +1,21 @@
 package com.iwaconsolti.league.manager.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.Objects;
-import java.util.Random;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Players {
     private Long id;
     private String name;
-
-    public Players(Long id, String name) {
-        if(Objects.isNull(id)) {
-            id = new Random().nextLong();
-        }
-        this.id = id;
-        this.name = name;
-    }
+    private Long teamId;
 
     public Players(Players players) {
         this.id = players.getId();
         this.name = players.getName();
+        this.teamId = players.getTeamId();
     }
-
-    public Players() {}
 
 }
