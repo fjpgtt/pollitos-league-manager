@@ -2,7 +2,6 @@ package com.iwaconsolti.league.demo.controller;
 
 import com.iwaconsolti.league.demo.model.League;
 import com.iwaconsolti.league.demo.service.LeagueService;
-import com.iwaconsolti.league.demo.service.PlayerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -17,7 +16,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class LeagueController {
-    private static final Logger logger = LoggerFactory.getLogger(PlayerService.class);
+    private static final Logger logger = LoggerFactory.getLogger(LeagueController.class);
 
     private final LeagueService leagueService;
 
@@ -29,11 +28,13 @@ public class LeagueController {
 
     @GetMapping
     public ResponseEntity<List<League>> getAllLeagues() {
+        logger.info("Get all leagues");
         return ResponseEntity.ok(leagueService.getAllLeagues());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<League> getLeagueById(@PathVariable Long id) {
+        logger.info("Get league by id: {}", id);
         return leagueService.getLeagueById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

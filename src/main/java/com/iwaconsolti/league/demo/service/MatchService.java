@@ -1,28 +1,27 @@
 package com.iwaconsolti.league.demo.service;
 
 import com.iwaconsolti.league.demo.model.League;
-import com.iwaconsolti.league.demo.model.Matches;
+import com.iwaconsolti.league.demo.model.Match;
 import com.iwaconsolti.league.demo.model.Team;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class MatchService {
-    private static final Logger logger = LoggerFactory.getLogger(PlayerService.class);
+    private static final Logger logger = LoggerFactory.getLogger(MatchService.class);
     private final LeagueService leagueService;
 
-    private List<Matches> matches = new ArrayList<>();
+    private final List<Match> matches = new ArrayList<>();
     private Long nextId = 1L;
 
     public MatchService(LeagueService leagueService) {
         this.leagueService = leagueService;
     }
-    public Matches createMatch(Long leagueId, Matches match) {
+    public Match createMatch(Long leagueId, Match match) {
         League league = leagueService.getLeagueById(leagueId)
                 .orElseThrow(() -> new IllegalArgumentException("League not found"));
 
@@ -55,7 +54,7 @@ public class MatchService {
                 .orElseThrow(() -> new IllegalArgumentException("Away team not found in league"));
     }
 
-    public List<Matches> getMatchesByTeam(Long leagueId, Long teamId) {
+    public List<Match> getMatchesByTeam(Long leagueId, Long teamId) {
         League league = leagueService.getLeagueById(leagueId)
                 .orElseThrow(() -> new IllegalArgumentException("League not found"));
 

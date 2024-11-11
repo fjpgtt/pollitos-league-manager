@@ -1,9 +1,7 @@
 package com.iwaconsolti.league.demo.controller;
 
-import com.fasterxml.jackson.databind.deser.DataFormatReaders;
-import com.iwaconsolti.league.demo.model.Matches;
+import com.iwaconsolti.league.demo.model.Match;
 import com.iwaconsolti.league.demo.service.MatchService;
-import com.iwaconsolti.league.demo.service.PlayerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -17,19 +15,19 @@ import java.util.List;
 @RequestMapping("/leagues/{leagueId}/matches")
 @Slf4j
 @RequiredArgsConstructor
-public class MatchContoller {
-    private static final Logger logger = LoggerFactory.getLogger(PlayerController.class);
+public class MatchController {
+    private static final Logger logger = LoggerFactory.getLogger(MatchController.class);
     private final MatchService matchService;
 
     @PostMapping
-    public ResponseEntity<Matches> createMatch(
+    public ResponseEntity<Match> createMatch(
             @PathVariable Long leagueId,
-            @RequestBody Matches match) {
+            @RequestBody Match match) {
         try {
-            log.info("Creating match in league {}", leagueId);
+            logger.info("Creating match in league {}", leagueId);
             return ResponseEntity.ok(matchService.createMatch(leagueId, match));
         } catch (IllegalArgumentException e) {
-            log.error("Error creating match: {}", e.getMessage());
+            logger.error("Error creating match: {}", e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
@@ -37,25 +35,25 @@ public class MatchContoller {
     @DeleteMapping
     public ResponseEntity<Void> deleteAllMatches(@PathVariable Long leagueId) {
         try {
-            log.info("Deleting all matches from league {}", leagueId);
+            logger.info("Deleting all matches from league {}", leagueId);
             matchService.deleteAllMatchesFromLeague(leagueId);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
-            log.error("Error deleting matches: {}", e.getMessage());
+            logger.error("Error deleting matches: {}", e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/teams/{teamId}")
-    public ResponseEntity<List<Matches>> getMatchesByTeam(
+    public ResponseEntity<List<Match>> getMatchesByTeam(
             @PathVariable Long leagueId,
             @PathVariable Long teamId) {
         try {
-            log.info("Getting matches for team {} in league {}", teamId, leagueId);
-            List<Matches> teamMatches = matchService.getMatchesByTeam(leagueId, teamId);
+            logger.info("Getting matches for team {} in league {}", teamId, leagueId);
+            List<Match> teamMatches = matchService.getMatchesByTeam(leagueId, teamId);
             return ResponseEntity.ok(teamMatches);
         } catch (IllegalArgumentException e) {
-            log.error("Error getting matches: {}", e.getMessage());
+            logger.error("Error getting matches: {}", e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }

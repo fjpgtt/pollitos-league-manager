@@ -21,5 +21,5 @@ public class League {
     private List<Team> teams = new ArrayList<>();
 
     @JsonManagedReference
-    private List<Matches> matches = new ArrayList<>();
+    private List<Match> matches = new ArrayList<>();
 }

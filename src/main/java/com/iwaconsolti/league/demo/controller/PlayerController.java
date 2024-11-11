@@ -1,7 +1,6 @@
 package com.iwaconsolti.league.demo.controller;
 
 import com.iwaconsolti.league.demo.model.Player;
-import com.iwaconsolti.league.demo.model.Team;
 import com.iwaconsolti.league.demo.service.PlayerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +27,10 @@ public class PlayerController {
             @PathVariable Long teamId,
             @RequestBody Player player) {
         try {
-            log.info("Creating player in team {} of league {}", teamId, leagueId);
+            logger.info("Creating player in team {} of league {}", teamId, leagueId);
             return ResponseEntity.ok(playerService.addPlayer(leagueId, teamId, player));
         } catch (IllegalArgumentException e) {
-            log.error("Error creating player: {}", e.getMessage());
+            logger.error("Error creating player: {}", e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

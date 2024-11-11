@@ -1,6 +1,5 @@
 package com.iwaconsolti.league.demo.controller;
 
-import com.iwaconsolti.league.demo.model.Player;
 import com.iwaconsolti.league.demo.model.Team;
 import com.iwaconsolti.league.demo.service.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +26,10 @@ public class TeamController {
             @PathVariable Long leagueId,
             @RequestBody Team team) {
         try {
-            log.info("Creating team in league {}", leagueId);
+            logger.info("Creating team in league {}", leagueId);
             return ResponseEntity.ok(teamService.createTeam(leagueId, team));
         } catch (IllegalArgumentException | IllegalStateException e) {
-            log.error("Error creating team: {}", e.getMessage());
+            logger.error("Error creating team: {}", e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
@@ -57,7 +56,7 @@ public class TeamController {
         try {
             return ResponseEntity.ok(teamService.updateTeam(leagueId, teamId, team));
         } catch (IllegalArgumentException e) {
-            log.error("Error updating team: {}", e.getMessage());
+            logger.error("Error updating team: {}", e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }

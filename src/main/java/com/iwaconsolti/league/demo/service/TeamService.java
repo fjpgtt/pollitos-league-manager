@@ -1,21 +1,19 @@
 package com.iwaconsolti.league.demo.service;
 
 import com.iwaconsolti.league.demo.model.League;
-import com.iwaconsolti.league.demo.model.Player;
 import com.iwaconsolti.league.demo.model.Team;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TeamService {
-    private static final Logger logger = LoggerFactory.getLogger(PlayerService.class);
+    private static final Logger logger = LoggerFactory.getLogger(TeamService.class);
     private final LeagueService leagueService;
-    private List<Team> teams = new ArrayList<>();
+    private final List<Team> teams = new ArrayList<>();
     private Long nextId = 1L;
 
 
