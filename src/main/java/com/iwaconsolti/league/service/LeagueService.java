@@ -9,6 +9,7 @@ import com.iwaconsolti.league.Config.TeamConfig;
 import com.iwaconsolti.league.Config.PlayerConfig;
 import com.iwaconsolti.league.Config.MatchConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Profile("populated")
 public class LeagueService {
 
     private final List<LeagueModel> leagueList;
@@ -27,7 +29,8 @@ public class LeagueService {
     // Constructor con la inyección de dependencias
     @Autowired
     public LeagueService(MatchConfig matchConfig, TeamConfig teamConfig, PlayerConfig playerConfig, LeagueConfig leagueConfig) {
-        this.leagueList = new ArrayList<>();
+        //this.leagueList = new ArrayList<>();
+        this.leagueList = leagueConfig.getLista();
         this.matchConfig = matchConfig;
         this.teamConfig = teamConfig;
         this.playerConfig = playerConfig;
