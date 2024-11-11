@@ -4,6 +4,10 @@ import com.iwaconsolti.league.model.LeagueModel;
 import com.iwaconsolti.league.model.TeamModel;
 import com.iwaconsolti.league.model.PlayerModel;
 import com.iwaconsolti.league.model.MatchModel;
+import com.iwaconsolti.league.Config.LeagueConfig;
+import com.iwaconsolti.league.Config.TeamConfig;
+import com.iwaconsolti.league.Config.PlayerConfig;
+import com.iwaconsolti.league.Config.MatchConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,41 +18,40 @@ import java.util.stream.Collectors;
 @Service
 public class LeagueService {
 
-    // Lista para almacenar las ligas en memoria
     private final List<LeagueModel> leagueList;
 
-    // Inyección de la dependencia MatchService, TeamService y PlayerService
-    private final MatchService matchService;
-    private final TeamService teamService;
-    private final PlayerService playerService;
-
+    private final MatchConfig matchConfig;
+    private final TeamConfig teamConfig;
+    private final PlayerConfig playerConfig;
+    private final LeagueConfig leagueConfig;
     // Constructor con la inyección de dependencias
     @Autowired
-    public LeagueService(MatchService matchService, TeamService teamService, PlayerService playerService) {
+    public LeagueService(MatchConfig matchConfig, TeamConfig teamConfig, PlayerConfig playerConfig, LeagueConfig leagueConfig) {
         this.leagueList = new ArrayList<>();
-        this.matchService = matchService;
-        this.teamService = teamService;
-        this.playerService = playerService;
+        this.matchConfig = matchConfig;
+        this.teamConfig = teamConfig;
+        this.playerConfig = playerConfig;
+        this.leagueConfig = leagueConfig;
     }
 
     // Método para insertar una nueva liga
     public LeagueModel insertLeague(LeagueModel league) {
         // Filtrar partidos con el mismo idLiga
-        List<MatchModel> matches = matchService.getMatch().stream()
-                .filter(match -> match.getIdLiga() == league.getIdLeague())  // Filtrar partidos con el mismo idLiga
-                .collect(Collectors.toList());  // Recoger los partidos filtrados en una lista
+        List<MatchModel> matches = matchConfig.getLista().stream()
+                .filter(match -> match.getIdLiga() == league.getIdLeague())
+                .collect(Collectors.toList());
         league.setPartidos(matches);
 
         // Filtrar equipos con el mismo idLiga
-        List<TeamModel> teams = teamService.getTeam().stream()
-                .filter(team -> team.getIdLiga() == league.getIdLeague())  // Filtrar equipos con el mismo idLiga
-                .collect(Collectors.toList());  // Recoger los equipos filtrados en una lista
+        List<TeamModel> teams = teamConfig.getLista().stream()
+                .filter(team -> team.getIdLiga() == league.getIdLeague())
+                .collect(Collectors.toList());
         league.setEquipos(teams);
 
         // Filtrar jugadores con el mismo idLiga
-        List<PlayerModel> players = playerService.getPlayer().stream()
-                .filter(player -> player.getIdLiga() == league.getIdLeague())  // Filtrar jugadores con el mismo idLiga
-                .collect(Collectors.toList());  // Recoger los jugadores filtrados en una lista
+        List<PlayerModel> players = playerConfig.getLista().stream()
+                .filter(player -> player.getIdLiga() == league.getIdLeague())
+                .collect(Collectors.toList());
         league.setJugadores(players);
 
         // Agregar la liga a la lista
@@ -58,6 +61,6 @@ public class LeagueService {
 
     // Método para obtener todas las ligas
     public List<LeagueModel> getAllLeagues() {
-        return leagueList; // Devuelve la lista de ligas
+        return leagueList;
     }
 }
