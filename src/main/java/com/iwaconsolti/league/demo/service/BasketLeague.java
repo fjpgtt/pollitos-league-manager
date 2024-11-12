@@ -50,31 +50,50 @@ public class BasketLeague implements LeagueInterface {
 
     @Override
     public List<Team> getAllTeams() {
-        return List.of();
+        return new ArrayList<>(teams);
     }
 
     @Override
     public List<Team> getAllPlayers() {
-        return List.of();
+        return new ArrayList<>(players);
     }
 
     @Override
-    public void editPlayer(int ID, Player player) {
-
-    }
-
-    @Override
-    public void editTeam(int ID, Team team) {
-
-    }
-
+public void editPlayer(int playerID, Player player) {
+ players.stream()
+           .filter(p -> p.getID() == playerID)  // Filter te player by id
+           .findFirst() 
+           .ifPresentOrElse(existingPlayer -> {
+               existingPlayer.setName(player.getName());
+               existingPlayer.setTeam(player.getTeam());
+               log.info("Player updated: {} in team {}", existingPlayer.getName(), existingPlayer.getTeam().getName());
+           }, () -> {
+               //if we could not found the player 
+               log.error("Player with ID {} not found", playerID);
+           });
+}
+@Override
+public void editTeam(int teamID, Team team) {
+    teams.stream()
+         .filter(t -> t.getID() == teamID)
+         .findFirst()
+         .ifPresent(existingTeam -> {
+             existingTeam.setName(team.getName());
+             existingTeam.setScore(team.getScore());
+         });
+    log.info("Team edited new team: {}", team);
+}
     @Override
     public void deleteAllMatches() {
-
+        matches.clear();
     }
 
     @Override
     public void deletePlayersOfATeam(int ID) {
+          teams.stream()
+         .filter(team -> team.getID() == teamID)
+         .findFirst()
+         .ifPresent(team -> players.removeIf(player -> player.getTeam().getID() == teamID)); // delete the player from that team.
 
     }
 
