@@ -37,8 +37,8 @@ public class LeagueControlApplication implements CommandLineRunner {
 
 				// Ahora, insertamos las ligas en los beans
 				System.out.println("Insertando las ligas en los beans...");
-				leagueService.insertLeague(leagueService.getSoccerLeague()); // Ejemplo de inserción
-				leagueService.insertLeague(leagueService.getBasketballLeague()); // Ejemplo de inserción
+				leagueService.insertLeague(leagueService.getSoccerLeague(),1); // Ejemplo de inserción
+				leagueService.insertLeague(leagueService.getBasketballLeague(),2); // Ejemplo de inserción
 
 				System.out.println("Ligas insertadas correctamente!");
 

@@ -1,5 +1,6 @@
 package com.iwaconsolti.league.service;
 
+import com.iwaconsolti.league.Config.LeagueConfig;
 import com.iwaconsolti.league.model.LeagueModel;
 import com.iwaconsolti.league.model.TeamModel;
 import com.iwaconsolti.league.model.PlayerModel;
@@ -9,11 +10,13 @@ import com.iwaconsolti.league.Config.TeamConfig;
 import com.iwaconsolti.league.Config.PlayerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Profile("populated")
 public class LeagueService {
 
     private final LeagueModel soccerLeague;      //Bean
@@ -22,6 +25,7 @@ public class LeagueService {
     private final MatchConfig matchConfig;
     private final TeamConfig teamConfig;
     private final PlayerConfig playerConfig;
+    private final LeagueConfig leagueConfig;
 
     @Autowired
     public LeagueService(
@@ -29,40 +33,52 @@ public class LeagueService {
             @Qualifier("Basketball") LeagueModel basketballLeague,
             MatchConfig matchConfig,
             TeamConfig teamConfig,
-            PlayerConfig playerConfig
+            PlayerConfig playerConfig,
+            LeagueConfig leagueConfig
     ) {
         this.soccerLeague = soccerLeague;
         this.basketballLeague = basketballLeague;
         this.matchConfig = matchConfig;
         this.teamConfig = teamConfig;
         this.playerConfig = playerConfig;
+        this.leagueConfig = leagueConfig;
+
+
     }
 
-    public LeagueModel insertLeague(LeagueModel league) {
-        // Insert Matches
-        List<MatchModel> matches = matchConfig.getLista();
-        league.setPartidos(matches);
+    public LeagueModel insertLeague(LeagueModel league, int i ) {
+ league.setIdLeague(i);
+        // Filtrar partidos con el mismo idLiga
+        List<MatchModel> matches = matchConfig.getLista().stream()
+                .filter(match -> match.getIdleague() == i)
+                .collect(Collectors.toList());
+        league.setMatchesleague(matches);
 
-        // Insert Teams
-        List<TeamModel> teams = teamConfig.getLista();
-        league.setEquipos(teams);
+        // Filtrar equipos con el mismo idLiga
+        List<TeamModel> teams = teamConfig.getLista().stream()
+                .filter(team -> team.getIdLeague() == i)
+                .collect(Collectors.toList());
 
-        // Insertar Players
-        List<PlayerModel> players = playerConfig.getLista();
-        league.setJugadores(players);
-league.setIdLeague(1);
-        // Insertar en la liga específica según el idLeague
-        if (league.getIdLeague() == 1) { // Suponiendo que '1' es para Soccer
-            soccerLeague.setNombre(league.getNombre());
-            soccerLeague.setEquipos(league.getEquipos());
-            soccerLeague.setJugadores(league.getJugadores());
-            soccerLeague.setPartidos(league.getPartidos());
+        league.setTeamsleague(teams);
+
+        // Filtrar jugadores con el mismo idLiga
+        List<PlayerModel> players = playerConfig.getLista().stream()
+                .filter(player -> player.getIdleague() == i)
+                .collect(Collectors.toList());
+        league.setPlayersleague(players);
+        if (league.getIdLeague() == 1) {
+            soccerLeague.setIdLeague(1);
+            soccerLeague.setNameleague("Soccer League");
+            soccerLeague.setTeamsleague(league.getTeamsleague());
+            soccerLeague.setPlayersleague(league.getPlayersleague());
+            soccerLeague.setMatchesleague(league.getMatchesleague());
             return soccerLeague;
-        } else if (league.getIdLeague() == 2) { // Suponiendo que '2' es para Basketball
-            basketballLeague.setNombre(league.getNombre());
-            basketballLeague.setEquipos(league.getEquipos());
-            basketballLeague.setJugadores(league.getJugadores());
-            basketballLeague.setPartidos(league.getPartidos());
+        } else if (league.getIdLeague() == 2) { 
+            basketballLeague.setIdLeague(2);
+            basketballLeague.setNameleague("Basketball League");
+            basketballLeague.setTeamsleague(league.getTeamsleague());
+            basketballLeague.setPlayersleague(league.getPlayersleague());
+            basketballLeague.setMatchesleague(league.getMatchesleague());
             return basketballLeague;
         }
 

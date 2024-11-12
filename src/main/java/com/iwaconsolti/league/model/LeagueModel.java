@@ -6,8 +6,8 @@ import java.util.List;
 @Data
 public class  LeagueModel {
     private int idLeague;
-    private String nombre;
-    private List<TeamModel> equipos;
-    private List<PlayerModel> jugadores;
-    private List<MatchModel> partidos;
+    private String nameleague;
+    private List<TeamModel> teamsleague;
+    private List<PlayerModel> playersleague;
+    private List<MatchModel> matchesleague;
 }
