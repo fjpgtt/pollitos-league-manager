@@ -19,7 +19,4 @@ public class Player {
         this.team = team;
     }
 
-    public void add(Player team) {
-        team.add(team);
-    }
 }

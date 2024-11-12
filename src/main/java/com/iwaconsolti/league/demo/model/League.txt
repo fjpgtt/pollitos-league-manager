@@ -1,0 +1,26 @@
+package com.iwaconsolti.league.demo.model;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
+@ToString
+public class League {
+    private int ID;
+    @Getter
+    private String name;
+    @Getter
+    private List<Team> teams = new ArrayList<>();
+
+    public League(String name, int ID) {
+        this.name = name;
+        this.ID = ID;
+    }
+
+
+}
