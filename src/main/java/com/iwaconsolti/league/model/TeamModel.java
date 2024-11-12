@@ -8,8 +8,8 @@ import java.util.List;
 
 @Data
 public class    TeamModel {
-    private int id;
-    private int idLiga;
-    private String nombre;
-    private List<PlayerModel> jugadores;
+    private int idteam;
+    private int idLeague;
+    private String teamname;
+    private List<PlayerModel> players;
 }

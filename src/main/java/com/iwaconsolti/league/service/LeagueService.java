@@ -4,61 +4,76 @@ import com.iwaconsolti.league.model.LeagueModel;
 import com.iwaconsolti.league.model.TeamModel;
 import com.iwaconsolti.league.model.PlayerModel;
 import com.iwaconsolti.league.model.MatchModel;
-import com.iwaconsolti.league.Config.LeagueConfig;
+import com.iwaconsolti.league.Config.MatchConfig;
 import com.iwaconsolti.league.Config.TeamConfig;
 import com.iwaconsolti.league.Config.PlayerConfig;
-import com.iwaconsolti.league.Config.MatchConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Profile("populated")
 public class LeagueService {
 
-    private final List<LeagueModel> leagueList;
+    private final LeagueModel soccerLeague;      //Bean
+    private final LeagueModel basketballLeague;  //Bean
 
     private final MatchConfig matchConfig;
     private final TeamConfig teamConfig;
     private final PlayerConfig playerConfig;
-    private final LeagueConfig leagueConfig;
+
     @Autowired
-    public LeagueService(MatchConfig matchConfig, TeamConfig teamConfig, PlayerConfig playerConfig, LeagueConfig leagueConfig) {
-        //this.leagueList = new ArrayList<>();
-        this.leagueList = leagueConfig.getLista();
+    public LeagueService(
+            @Qualifier("soccer") LeagueModel soccerLeague,
+            @Qualifier("Basketball") LeagueModel basketballLeague,
+            MatchConfig matchConfig,
+            TeamConfig teamConfig,
+            PlayerConfig playerConfig
+    ) {
+        this.soccerLeague = soccerLeague;
+        this.basketballLeague = basketballLeague;
         this.matchConfig = matchConfig;
         this.teamConfig = teamConfig;
         this.playerConfig = playerConfig;
-        this.leagueConfig = leagueConfig;
     }
 
-    // Método para insertar una nueva liga
     public LeagueModel insertLeague(LeagueModel league) {
-        // Filtrar partidos con el mismo idLiga
-        List<MatchModel> matches = matchConfig.getLista().stream()
-                .filter(match -> match.getIdLiga() == league.getIdLeague())
-                .collect(Collectors.toList());
+        // Insert Matches
+        List<MatchModel> matches = matchConfig.getLista();
         league.setPartidos(matches);
 
-        // Filtrar equipos con el mismo idLiga
-        List<TeamModel> teams = teamConfig.getLista().stream()
-                .filter(team -> team.getIdLiga() == league.getIdLeague())
-                .collect(Collectors.toList());
+        // Insert Teams
+        List<TeamModel> teams = teamConfig.getLista();
         league.setEquipos(teams);
 
-        // Filtrar jugadores con el mismo idLiga
-        List<PlayerModel> players = playerConfig.getLista().stream()
-                .filter(player -> player.getIdLiga() == league.getIdLeague())
-                .collect(Collectors.toList());
+        // Insertar Players
+        List<PlayerModel> players = playerConfig.getLista();
         league.setJugadores(players);
+league.setIdLeague(1);
+        // Insertar en la liga específica según el idLeague
+        if (league.getIdLeague() == 1) { // Suponiendo que '1' es para Soccer
+            soccerLeague.setNombre(league.getNombre());
+            soccerLeague.setEquipos(league.getEquipos());
+            soccerLeague.setJugadores(league.getJugadores());
+            soccerLeague.setPartidos(league.getPartidos());
+            return soccerLeague;
+        } else if (league.getIdLeague() == 2) { // Suponiendo que '2' es para Basketball
+            basketballLeague.setNombre(league.getNombre());
+            basketballLeague.setEquipos(league.getEquipos());
+            basketballLeague.setJugadores(league.getJugadores());
+            basketballLeague.setPartidos(league.getPartidos());
+            return basketballLeague;
+        }
 
-        leagueList.add(league);
-        return league;
+        return null;
     }
 
-    public List<LeagueModel> getAllLeagues() {
-        return leagueList;
+    public LeagueModel getSoccerLeague() {
+        return soccerLeague;
+    }
+
+    public LeagueModel getBasketballLeague() {
+        return basketballLeague;
     }
 }

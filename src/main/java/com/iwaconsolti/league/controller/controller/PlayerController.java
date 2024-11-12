@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/Player")
@@ -17,13 +19,10 @@ public class PlayerController {
     public PlayerController(PlayerService service) {
         this.service = service;
     }
-    @GetMapping("/{idTeam}")
-    public PlayerModel getPlayerById(@PathVariable Integer idTeam) {
-        if (idTeam == null) {
-            System.out.println("El idPlayer proporcionado es null");
-            return null;
-        }
-        return service.getPlayerById(idTeam);
+    @GetMapping("/")
+    public ResponseEntity<List<PlayerModel>> getPlayer(){
+        log.info("enter");
+        return ResponseEntity.ok(service.getPlayer());
     }
     @PostMapping("/")
     public PlayerModel addPlayer(@RequestBody PlayerModel playermodel) {

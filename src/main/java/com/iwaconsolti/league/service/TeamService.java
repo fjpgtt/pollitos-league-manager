@@ -1,5 +1,7 @@
 package com.iwaconsolti.league.service;
 
+import com.iwaconsolti.league.Config.PlayerConfig;
+import com.iwaconsolti.league.Config.TeamConfig;
 import com.iwaconsolti.league.model.PlayerModel;
 import com.iwaconsolti.league.model.TeamModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,21 +17,23 @@ public class TeamService {
 
     private final List<TeamModel> teamList = new ArrayList<>();
     private final PlayerService playerService;
+    private TeamConfig teamConfig;
 
 
     @Autowired
-    public TeamService(PlayerService playerService) {
+    public TeamService(PlayerService playerService, TeamConfig teamConfig) {
         this.playerService = playerService;
+        this.teamConfig = teamConfig;
     }
 
 
     public TeamModel insertTeam(TeamModel team) {
         List<PlayerModel> players = playerService.getPlayer().stream()
-                .filter(player -> player.getIdEquipo() == team.getId())
+                .filter(player -> player.getIdteam() == team.getIdteam())
                 .collect(Collectors.toList());
-        team.setJugadores(players);
+        team.setPlayers(players);
         teamList.add(team);
-
+        teamConfig.setLista(teamList);
         return team;
     }
 
@@ -39,10 +43,10 @@ public class TeamService {
 
     public TeamModel updateTeam(int id, TeamModel team) {
         for (TeamModel aux : teamList) {
-            if (aux.getId() == id) {
-                aux.setId(team.getId());
-                aux.setNombre(team.getNombre());
-                aux.setJugadores(team.getJugadores());
+            if (aux.getIdteam() == id) {
+                aux.setIdteam(team.getIdteam());
+                aux.setTeamname(team.getTeamname());
+                aux.setPlayers(team.getPlayers());
                 return aux;
             }
         }
@@ -51,8 +55,8 @@ public class TeamService {
 
     public boolean deleteTeam(int id) {
         for (TeamModel aux : teamList) {
-            if (aux.getId() == id) {
-                aux.setJugadores(Collections.emptyList());
+            if (aux.getIdteam() == id) {
+                aux.setPlayers(Collections.emptyList());
                 return true;
             }
         }
@@ -62,7 +66,7 @@ public class TeamService {
 
     public TeamModel getTeamById(int teamId) {
         return teamList.stream()
-                .filter(team -> team.getId() == teamId)
+                .filter(team -> team.getIdteam() == teamId)
                 .findFirst()
                 .orElse(null);
     }
