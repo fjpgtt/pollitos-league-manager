@@ -16,7 +16,7 @@ public class LeagueService {
 
     public League createLeague(League league) {
         if (league.getMaxTeams() <= 0) {
-            league.setMaxTeams(10); // default value
+            league.setMaxTeams(10);
         }
         league.setId(nextId++);
         leagues.add(league);
