@@ -1,8 +1,6 @@
 package com.iwaconsolti.league.demo.service;
 
 import com.iwaconsolti.league.demo.model.League;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,30 +8,29 @@ import java.util.Optional;
 
 @Service
 public class LeagueService {
-    private static final Logger logger = LoggerFactory.getLogger(LeagueService.class);
-    private final List<League> leagues = new ArrayList<>();
-    private Long nextId = 1L;
+    private final List<League> leagueList = new ArrayList<>();
+    private long nextId = 1L;
 
     public League createLeague(League league) {
         if (league.getMaxTeams() <= 0) {
             league.setMaxTeams(10);
         }
         league.setId(nextId++);
-        leagues.add(league);
+        leagueList.add(league);
         return league;
     }
 
-    public Optional<League> getLeagueById(Long id) {
-        return leagues.stream()
-                .filter(league -> league.getId().equals(id))
+    public Optional<League> findLeagueById(long id) {
+        return leagueList.stream()
+                .filter(league -> league.getId() == (id))
                 .findFirst();
     }
 
-    public List<League> getAllLeagues() {
-        return new ArrayList<>(leagues);
+    public List<League> findAllLeagues() {
+        return new ArrayList<>(leagueList);
     }
 
     public boolean canAddTeamToLeague(League league) {
-        return league.getTeams().size() < league.getMaxTeams();
+        return league.getTeamList().size() < league.getMaxTeams();
     }
 }

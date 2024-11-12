@@ -54,13 +54,13 @@ public class LeagueInitializer {
 
         player1.setTeam(createdTeam1);
         player2.setTeam(createdTeam1);
-        createdTeam1.getPlayers().add(player1);
-        createdTeam1.getPlayers().add(player2);
+        createdTeam1.getPlayerList().add(player1);
+        createdTeam1.getPlayerList().add(player2);
 
         player3.setTeam(createdTeam2);
         player4.setTeam(createdTeam2);
-        createdTeam2.getPlayers().add(player3);
-        createdTeam2.getPlayers().add(player4);
+        createdTeam2.getPlayerList().add(player3);
+        createdTeam2.getPlayerList().add(player4);
 
         // baseball
         League baseballLeague = new League();

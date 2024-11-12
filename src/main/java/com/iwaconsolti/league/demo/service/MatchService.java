@@ -3,65 +3,74 @@ package com.iwaconsolti.league.demo.service;
 import com.iwaconsolti.league.demo.model.League;
 import com.iwaconsolti.league.demo.model.Match;
 import com.iwaconsolti.league.demo.model.Team;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class MatchService {
-    private static final Logger logger = LoggerFactory.getLogger(MatchService.class);
     private final LeagueService leagueService;
 
-    private final List<Match> matches = new ArrayList<>();
-    private Long nextId = 1L;
+    private final List<Match> matchList = new ArrayList<>();
+    private long nextId = 1L;
 
     public MatchService(LeagueService leagueService) {
         this.leagueService = leagueService;
     }
-    public Match createMatch(Long leagueId, Match match) {
-        League league = leagueService.getLeagueById(leagueId)
-                .orElseThrow(() -> new IllegalArgumentException("League not found"));
+    public Match createMatch(long leagueId, Match match) {
+        League league = leagueService.findLeagueById(leagueId)
+                .orElseThrow(() -> new IllegalArgumentException("Liga no encontrada"));
 
-        validateTeamsInSameLeague(match.getHomeTeam(), match.getAwayTeam(), league);
+        Team homeTeam = league.getTeamList().stream()
+                .filter(team -> team.getId() == match.getHomeTeam().getId())
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Equipo local no encontrado en la liga"));
+
+        Team awayTeam = league.getTeamList().stream()
+                .filter(team -> team.getId() == match.getAwayTeam().getId())
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Equipo visitante no encontrado en la liga"));
+
+        validateTeamsInSameLeague(homeTeam, awayTeam, league);
 
         match.setId(nextId++);
         match.setLeague(league);
-        matches.add(match);
-        league.getMatches().add(match);
+        matchList.add(match);
+        league.getMatchList().add(match);
         return match;
     }
 
-    public void deleteAllMatchesFromLeague(Long leagueId) {
-        League league = leagueService.getLeagueById(leagueId)
+    public void deleteAllMatchesFromLeague(long leagueId) {
+        League league = leagueService.findLeagueById(leagueId)
                 .orElseThrow(() -> new IllegalArgumentException("League not found"));
 
-        matches.removeIf(match -> match.getLeague().equals(league));
-        league.getMatches().clear();
+        matchList.removeIf(match -> match.getLeague().equals(league));
+        league.getMatchList().clear();
     }
 
     private void validateTeamsInSameLeague(Team homeTeam, Team awayTeam, League league) {
-        Team foundHomeTeam = league.getTeams().stream()
-                .filter(team -> team.getId().equals(homeTeam.getId()))
+        Team foundHomeTeam = league.getTeamList().stream()
+                .filter(team -> team.getId() == (homeTeam.getId()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Home team not found in league"));
 
-        Team foundAwayTeam = league.getTeams().stream()
-                .filter(team -> team.getId().equals(awayTeam.getId()))
+        Team foundAwayTeam = league.getTeamList().stream()
+                .filter(team -> team.getId() == (awayTeam.getId()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Away team not found in league"));
     }
 
-    public List<Match> getMatchesByTeam(Long leagueId, Long teamId) {
-        League league = leagueService.getLeagueById(leagueId)
+    public List<Match> findMatchesByTeam(long leagueId, long teamId) {
+        League league = leagueService.findLeagueById(leagueId)
                 .orElseThrow(() -> new IllegalArgumentException("League not found"));
 
-        return matches.stream()
-                .filter(match -> match.getLeague().getId().equals(leagueId) &&
-                        (match.getHomeTeam().getId().equals(teamId) ||
-                                match.getAwayTeam().getId().equals(teamId)))
+        return matchList.stream()
+                .filter(match -> match.getLeague().getId() == (leagueId) &&
+                        (match.getHomeTeam().getId() == (teamId) ||
+                                match.getAwayTeam().getId() == (teamId)))
                 .collect(Collectors.toList());
     }
 }

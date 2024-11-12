@@ -1,17 +1,16 @@
 package com.iwaconsolti.league.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "team")
 public class Player {
-    private Long id;
+    private long id;
     private String name;
-
-    @JsonBackReference
     private Team team;
 }

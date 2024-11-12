@@ -10,62 +10,60 @@ import java.util.List;
 
 @Service
 public class PlayerService {
-    private static final Logger logger = LoggerFactory.getLogger(PlayerService.class);
-
     private final TeamService teamService;
-    private final List<Player> players = new ArrayList<>();
-    private Long nextId = 1L;
+    private final List<Player> playerList = new ArrayList<>();
+    private long nextId = 1L;
 
     public PlayerService(TeamService teamService) {
         this.teamService = teamService;
     }
 
-    public Player addPlayer(Long leagueId, Long teamId, Player player) {
-        Team team = teamService.getTeamById(leagueId, teamId)
+    public Player createPlayer(long leagueId, long teamId, Player player) {
+        Team team = teamService.findTeamById(leagueId, teamId)
                 .orElseThrow(() -> new IllegalArgumentException("Team not found in league"));
 
         player.setId(nextId++);
         player.setTeam(team);
-        players.add(player);
-        team.getPlayers().add(player);
+        playerList.add(player);
+        team.getPlayerList().add(player);
 
         return player;
     }
 
-    public List<Player> getPlayersByTeam(Long leagueId, Long teamId) {
-        return teamService.getTeamById(leagueId, teamId)
-                .map(Team::getPlayers)
+    public List<Player> findPlayersByTeam(long leagueId, long teamId) {
+        return teamService.findTeamById(leagueId, teamId)
+                .map(Team::getPlayerList)
                 .orElseThrow(() -> new IllegalArgumentException("Team not found in league"));
     }
 
-    public Player updatePlayer(Long leagueId, Long teamId, Long playerId, Player playerDetails) {
-        return players.stream()
-                .filter(p -> p.getId().equals(playerId) &&
-                        p.getTeam().getId().equals(teamId) &&
-                        p.getTeam().getLeague().getId().equals(leagueId))
+    public Player updatePlayer(long leagueId, long teamId, long playerId, Player playerDetails) {
+        return playerList.stream()
+                .filter(p -> p.getId() == playerId &&
+                        p.getTeam().getId() == teamId &&
+                        p.getTeam().getLeague().getId() == leagueId)
                 .findFirst()
                 .map(player -> {
                     if (playerDetails.getName() != null) {
                         player.setName(playerDetails.getName());
                     }
-                    if (playerDetails.getTeam() != null && !playerDetails.getTeam().getId().equals(teamId)) {
-                        Team newTeam = teamService.getTeamById(leagueId, playerDetails.getTeam().getId())
+                    if (playerDetails.getTeam() != null && playerDetails.getTeam().getId() != teamId) {
+                        Team newTeam = teamService.findTeamById(leagueId, playerDetails.getTeam().getId())
                                 .orElseThrow(() -> new IllegalArgumentException("New team not found in league"));
-                        player.getTeam().getPlayers().remove(player);
+                        player.getTeam().getPlayerList().remove(player);
                         player.setTeam(newTeam);
-                        newTeam.getPlayers().add(player);
+                        newTeam.getPlayerList().add(player);
                     }
                     return player;
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Player not found in team/league"));
     }
 
-    public void deletePlayersFromTeam(Long leagueId, Long teamId) {
-        Team team = teamService.getTeamById(leagueId, teamId)
+    public void deletePlayersFromTeam(long leagueId, long teamId) {
+        Team team = teamService.findTeamById(leagueId, teamId)
                 .orElseThrow(() -> new IllegalArgumentException("Team not found in league"));
 
-        players.removeIf(player -> player.getTeam().equals(team));
-        team.getPlayers().clear();
+        playerList.removeIf(player -> player.getTeam().equals(team));
+        team.getPlayerList().clear();
     }
 
 }
