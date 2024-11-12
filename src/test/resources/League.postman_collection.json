@@ -22,7 +22,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"homeTeam\": {\n        \"id\": 1,\n        \"name\": \"Team X\"\n    },\n    \"awayTeam\": {\n        \"id\": 2,\n        \"name\": \"Team 2\"\n    },\n    \"homeScore\": 1,\n    \"awayScore\": 1\n}",
+							"raw": "{\n    \"homeTeamId\": 2,\n    \"awayTeamId\": 1,\n    \"homeScore\": 1,\n    \"awayScore\": 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -95,27 +95,6 @@
 			"name": "Team",
 			"item": [
 				{
-					"name": "Get All Teams",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/leagues/1/team",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"leagues",
-								"1",
-								"team"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Create Team",
 					"request": {
 						"method": "POST",
@@ -130,7 +109,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/leagues/1/team",
+							"raw": "http://localhost:8080/leagues/1/teams",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -139,7 +118,59 @@
 							"path": [
 								"leagues",
 								"1",
-								"team"
+								"teams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Teams",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/leagues/1/teams",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"leagues",
+								"1",
+								"teams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update team",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Equipo 4\",\n    \"playerList\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/leagues/1/teams/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"leagues",
+								"1",
+								"teams",
+								"2"
 							]
 						}
 					},
@@ -151,14 +182,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/team/name/Juan",
+							"raw": "http://localhost:8080/teams/name/Juan",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"team",
+								"teams",
 								"name",
 								"Juan"
 							]
@@ -172,68 +203,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/team/1",
+							"raw": "http://localhost:8080/teams/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"team",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get players by id team",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/leagues/1/teams/2/players",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"leagues",
-								"1",
 								"teams",
-								"2",
-								"players"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update team",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"Equipo 4\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/leagues/1/team/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"leagues",
-								"1",
-								"team",
 								"1"
 							]
 						}
@@ -246,7 +223,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/leagues/1/team",
+							"raw": "http://localhost:8080/leagues/1/teams",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -255,7 +232,7 @@
 							"path": [
 								"leagues",
 								"1",
-								"team"
+								"teams"
 							]
 						}
 					},
@@ -280,6 +257,29 @@
 								}
 							}
 						},
+						"url": {
+							"raw": "http://localhost:8080/leagues/1/teams/1/players",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"leagues",
+								"1",
+								"teams",
+								"1",
+								"players"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get players by id team",
+					"request": {
+						"method": "GET",
+						"header": [],
 						"url": {
 							"raw": "http://localhost:8080/leagues/1/teams/1/players",
 							"protocol": "http",
@@ -337,7 +337,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/leagues/1/teams/2/players",
+							"raw": "http://localhost:8080/leagues/1/teams/1/players",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -347,7 +347,7 @@
 								"leagues",
 								"1",
 								"teams",
-								"2",
+								"1",
 								"players"
 							]
 						}
@@ -384,7 +384,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/leagues/2",
+							"raw": "http://localhost:8080/leagues/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -392,7 +392,7 @@
 							"port": "8080",
 							"path": [
 								"leagues",
-								"2"
+								"1"
 							]
 						}
 					},
