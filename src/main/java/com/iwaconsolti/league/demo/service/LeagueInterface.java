@@ -1,5 +1,6 @@
 package com.iwaconsolti.league.demo.service;
 
+import com.iwaconsolti.league.demo.dto.MatchDTO;
 import com.iwaconsolti.league.demo.dto.PlayerDTO;
 import com.iwaconsolti.league.demo.dto.TeamDTO;
 
@@ -21,4 +22,5 @@ public interface LeagueInterface {
     void deleteAllMatches();
     void deletePlayersOfATeam(String teamName);
 
+    List<MatchDTO> getMatchDTOS();
 }

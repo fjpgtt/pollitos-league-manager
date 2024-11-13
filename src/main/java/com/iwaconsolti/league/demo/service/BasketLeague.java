@@ -70,6 +70,7 @@ public class BasketLeague implements LeagueInterface {
 
     @Override
     public List<PlayerDTO> getAllPlayers(String teamName) {
+        log.info("Returning all players from Basket League Team: {}", teamName);
         return playerDTOS.stream()
                 .filter(player -> player.getTeam().equalsIgnoreCase(teamName))
                 .toList();
