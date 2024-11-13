@@ -1,8 +1,8 @@
 package com.iwaconsolti.league.demo.controller;
 
-import com.iwaconsolti.league.demo.model.Player;
-import com.iwaconsolti.league.demo.model.Team;
-import com.iwaconsolti.league.demo.model.Match;
+import com.iwaconsolti.league.demo.dto.MatchDTO;
+import com.iwaconsolti.league.demo.dto.PlayerDTO;
+import com.iwaconsolti.league.demo.dto.TeamDTO;
 import com.iwaconsolti.league.demo.service.BasketLeague;
 import com.iwaconsolti.league.demo.service.SoccerLeague;
 import com.iwaconsolti.league.demo.service.ValidateService;
@@ -33,12 +33,12 @@ public class LeagueController {
     }
 
     @PostMapping("/{leagueName}/team")
-    public String createTeam(@PathVariable String leagueName, @RequestBody Team team) {
+    public String createTeam(@PathVariable String leagueName, @RequestBody TeamDTO teamDTO) {
         if ("basketleague".equalsIgnoreCase(leagueName)) {
-            basketLeague.createTeam(team);
+            basketLeague.createTeam(teamDTO);
             return "Team added to " + leagueName;
         } else if ("soccerleague".equalsIgnoreCase(leagueName)) {
-            soccerLeague.createTeam(team);
+            soccerLeague.createTeam(teamDTO);
             return "Team added to " + leagueName;
         }
         log.error("League {} doesn't exist", leagueName);
@@ -46,7 +46,7 @@ public class LeagueController {
     }
 
     @PostMapping("/{leagueName}/{team}/player")
-    public String createPlayer(@PathVariable String leagueName, @PathVariable String team, @RequestBody Player player) {
+    public String createPlayer(@PathVariable String leagueName, @PathVariable String team, @RequestBody PlayerDTO playerDTO) {
         // Validate league
         if (!validateService.leagueNameValidation(leagueName)) {
             log.error("Incorrect league");
@@ -57,12 +57,13 @@ public class LeagueController {
             log.error("Incorrect Team");
             return "Please try with a valid team name";
         }
-        // Creating player
+
+        // Creating playerDTO
         if ("basketleague".equalsIgnoreCase(leagueName)) {
-            basketLeague.createPlayer(player);
+            basketLeague.createPlayer(playerDTO);
             return "Player added to " + leagueName + " in team: " + team;
         } else if ("soccerleague".equalsIgnoreCase(leagueName)) {
-            soccerLeague.createPlayer(player);
+            soccerLeague.createPlayer(playerDTO);
             return "Player added to " + leagueName + " in team: " + team;
         }
 
@@ -71,18 +72,18 @@ public class LeagueController {
     }
 
     @PostMapping("/{leagueName}/match")
-    public String createMatch(@PathVariable String leagueName, @RequestBody Match match) {
+    public String createMatch(@PathVariable String leagueName, @RequestBody MatchDTO matchDTO) {
         if (!validateService.leagueNameValidation(leagueName)) {
             log.error("Incorrect league: {}", leagueName);
             return "Incorrect league " + leagueName;
         }
 
         if ("basketleague".equalsIgnoreCase(leagueName)) {
-            basketLeague.createMatch(match.getTeam1(), match.getTeam2());
-            return "Match created in " + leagueName + " " + match.getTeam1() + " vs " + match.getTeam2();
+            basketLeague.createMatch(matchDTO.getTeamDTO1(), matchDTO.getTeamDTO2());
+            return "Match created in " + leagueName + " " + matchDTO.getTeamDTO1() + " vs " + matchDTO.getTeamDTO2();
         } else if ("soccerleague".equalsIgnoreCase(leagueName)) {
-            soccerLeague.createMatch(match.getTeam1(), match.getTeam2());
-            return "Match created in " + leagueName + " " + match.getTeam1() + " vs " + match.getTeam2();
+            soccerLeague.createMatch(matchDTO.getTeamDTO1(), matchDTO.getTeamDTO2());
+            return "Match created in " + leagueName + " " + matchDTO.getTeamDTO1() + " vs " + matchDTO.getTeamDTO2();
         }
 
         log.error("League {} doesn't exist", leagueName);
@@ -90,16 +91,16 @@ public class LeagueController {
     }
 
     @GetMapping("/{leagueName}/team")
-    public List<Team> getAllTeams(@PathVariable String leagueName) {
+    public List<TeamDTO> getAllTeams(@PathVariable String leagueName) {
         if (!validateService.leagueNameValidation(leagueName)) {
             log.error("Incorrect league: {}", leagueName);
             return new ArrayList<>();
         }
 
         if ("basketleague".equalsIgnoreCase(leagueName)) {
-            return basketLeague.getTeams();
+            return basketLeague.getTeamDTOS();
         } else if ("soccerleague".equalsIgnoreCase(leagueName)) {
-            return soccerLeague.getTeams();
+            return soccerLeague.getTeamDTOS();
         }
 
         log.error("League {} doesn't exist", leagueName);
@@ -107,7 +108,7 @@ public class LeagueController {
     }
 
     @GetMapping("/{leagueName}/team/{teamName}/players")
-    public List<Player> getAllPlayers(@PathVariable String leagueName, @PathVariable String teamName) {
+    public List<PlayerDTO> getAllPlayers(@PathVariable String leagueName, @PathVariable String teamName) {
         if (!validateService.leagueNameValidation(leagueName)) {
             log.error("Incorrect league: {}", leagueName);
             return new ArrayList<>();
@@ -123,16 +124,16 @@ public class LeagueController {
     }
 
     @GetMapping("/{leagueName}/matches")
-    public List<Match> getMatchesFromLeagues(@PathVariable String leagueName) {
+    public List<MatchDTO> getMatchesFromLeagues(@PathVariable String leagueName) {
         if (!validateService.leagueNameValidation(leagueName)) {
             log.error("Incorrect league: {}", leagueName);
             return new ArrayList<>();
         }
 
         if ("basketleague".equalsIgnoreCase(leagueName)) {
-            return basketLeague.getMatches();
+            return basketLeague.getMatchDTOS();
         } else if ("soccerleague".equalsIgnoreCase(leagueName)) {
-            return soccerLeague.getMatches();
+            return soccerLeague.getMatchDTOS();
         }
 
         log.error("League {} doesn't exist", leagueName);
@@ -140,22 +141,22 @@ public class LeagueController {
     }
 
     @PutMapping("/{leagueName}/{teamName}/player/{playerId}")
-    public String editPlayer(@PathVariable String leagueName, @PathVariable String teamName, @PathVariable int playerId, @RequestBody Player player) {
+    public String editPlayer(@PathVariable String leagueName, @PathVariable String teamName, @PathVariable int playerId, @RequestBody PlayerDTO playerDTO) {
         if (!validateService.leagueNameValidation(leagueName)) {
             log.error("Incorrect league: {}", leagueName);
             return "Incorrect league " + leagueName;
         }
 
         if (!validateService.teamNameValidation(teamName, leagueName)) {
-            log.error("Incorrect Team {}", teamName);
+            log.error("Incorrect TeamDTO {}", teamName);
             return "Please try with a valid team name";
         }
 
         if ("basketleague".equalsIgnoreCase(leagueName)) {
-            basketLeague.editPlayer(playerId, player);
+            basketLeague.editPlayer(playerId, playerDTO);
             return "Player information updated in " + leagueName + " and " + teamName;
         } else if ("soccerleague".equalsIgnoreCase(leagueName)) {
-            soccerLeague.editPlayer(playerId, player);
+            soccerLeague.editPlayer(playerId, playerDTO);
             return "Player information updated in " + leagueName + " and " + teamName;
         }
 
@@ -164,17 +165,17 @@ public class LeagueController {
     }
 
     @PutMapping("/{leagueName}/team/{teamID}")
-    public String editTeam(@PathVariable String leagueName, @PathVariable int teamID, @RequestBody Team newTeam) {
+    public String editTeam(@PathVariable String leagueName, @PathVariable int teamID, @RequestBody TeamDTO newTeamDTO) {
         if (!validateService.leagueNameValidation(leagueName)) {
             log.error("Incorrect league: {}", leagueName);
             return "Incorrect league: " + leagueName;
         }
 
         if ("basketleague".equalsIgnoreCase(leagueName)) {
-            basketLeague.editTeam(teamID, newTeam);
+            basketLeague.editTeam(teamID, newTeamDTO);
             return "Team updated in " + leagueName;
         } else if ("soccerleague".equalsIgnoreCase(leagueName)) {
-            soccerLeague.editTeam(teamID, newTeam);
+            soccerLeague.editTeam(teamID, newTeamDTO);
             return "Team updated in " + leagueName;
         }
 

@@ -1,22 +1,22 @@
 package com.iwaconsolti.league.demo.service;
 
-import com.iwaconsolti.league.demo.model.Player;
-import com.iwaconsolti.league.demo.model.Team;
+import com.iwaconsolti.league.demo.dto.PlayerDTO;
+import com.iwaconsolti.league.demo.dto.TeamDTO;
 
 import java.util.List;
 
 public interface LeagueInterface {
 
     //The creating methods
-    void createTeam(Team team);
-    void createPlayer(Player player);
-    void createMatch(Team team1, Team team2);
+    void createTeam(TeamDTO teamDTO);
+    void createPlayer(PlayerDTO playerDTO);
+    void createMatch(TeamDTO teamDTO1, TeamDTO teamDTO2);
 
-    List<Team> getAllTeams();
-    List<Player> getAllPlayers(String teamName);
+    List<TeamDTO> getAllTeams();
+    List<PlayerDTO> getAllPlayers(String teamName);
 
-    void editPlayer(int ID, Player player);
-    void editTeam(int teamID, Team team);
+    void editPlayer(int ID, PlayerDTO playerDTO);
+    void editTeam(int teamID, TeamDTO teamDTO);
 
     void deleteAllMatches();
     void deletePlayersOfATeam(String teamName);

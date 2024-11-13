@@ -28,11 +28,11 @@ public class ValidateService {
     public boolean teamNameValidation(String teamName, String leagueName) {
 
         if ("basketleague".equalsIgnoreCase(leagueName)) {
-            log.info("Team exists {}",basketLeague.getTeams().toString());
-            return basketLeague.getTeams().stream().anyMatch((team -> team.getName().equalsIgnoreCase(teamName)));
+            log.info("Team exists {}",basketLeague.getTeamDTOS().toString());
+            return basketLeague.getTeamDTOS().stream().anyMatch((team -> team.getName().equalsIgnoreCase(teamName)));
         } else if ("soccerleague".equalsIgnoreCase(leagueName)) {
-            log.info("Team exists {}",soccerLeague.getTeams().toString());
-            return soccerLeague.getTeams().stream().anyMatch((team -> team.getName().equalsIgnoreCase(teamName)));
+            log.info("Team exists {}",soccerLeague.getTeamDTOS().toString());
+            return soccerLeague.getTeamDTOS().stream().anyMatch((team -> team.getName().equalsIgnoreCase(teamName)));
         }
         return false;
     }

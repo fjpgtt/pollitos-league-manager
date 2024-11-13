@@ -1,19 +1,22 @@
 package com.iwaconsolti.league.demo.service;
 
-import com.iwaconsolti.league.demo.model.Match;
-import com.iwaconsolti.league.demo.model.Player;
-import com.iwaconsolti.league.demo.model.Team;
+import com.iwaconsolti.league.demo.dto.MatchDTO;
+import com.iwaconsolti.league.demo.dto.PlayerDTO;
+import com.iwaconsolti.league.demo.dto.TeamDTO;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Profile("populated")
 @Service("basketleague")
 @Slf4j
 @Getter
@@ -21,84 +24,128 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 public class BasketLeague implements LeagueInterface {
-    private final List<Match> matches = new ArrayList<>();
-    private final List<Team> teams = new ArrayList<>();
-    private final List<Player> players = new ArrayList<>();
+    @Value("${league.teamLimit}")
+    private int TEAMLIMIT;
+
+    private final List<MatchDTO> matchDTOS = new ArrayList<>();
+    private final List<TeamDTO> teamDTOS = new ArrayList<>();
+    private final List<PlayerDTO> playerDTOS = new ArrayList<>();
     private int ID;
 
-    public BasketLeague(int ID) {
+    public BasketLeague(int ID, int limit) {
         this.ID = ID;
     }
 
     @Override
-    public void createTeam(Team team) {
-        teams.add(team);
+    public void createTeam(TeamDTO teamDTO) {
+        if (this.teamDTOS.size() == TEAMLIMIT) {
+            log.error("You reached the max of team per league");
+        } else {
+            this.teamDTOS.add(teamDTO);
+            log.info("Team {} added to Basket League", teamDTO.getName());
+        }
     }
 
     @Override
-    public void createPlayer(Player player) {
-        log.info(players.toString());
-        players.add(player);
+    public void createPlayer(PlayerDTO playerDTO) {
+        playerDTOS.add(playerDTO);
+        log.info("Player created: {}", playerDTO.getName());
+        log.info("Player added to Basket league in team {}", playerDTO.getTeam());
+
     }
 
     @Override
-    public void createMatch(Team team1, Team team2) {
-      //Here we created a match with two teams and then we added that match to the list of matches.
-        Match match = new Match(team1, team2);
-        matches.add(match);
+    public void createMatch(TeamDTO teamDTO1, TeamDTO teamDTO2) {
+        //Here we created a matchDTO with two teamDTOS and then we added that matchDTO to the list of matchDTOS.
+        MatchDTO matchDTO = new MatchDTO(teamDTO1, teamDTO2);
+        matchDTOS.add(matchDTO);
+        log.info("Match created in Basket League: {} vs {} ", teamDTO1.getName(), teamDTO2.getName());
+
     }
 
     @Override
-    public List<Team> getAllTeams() {
-        return new ArrayList<>(teams);
+    public List<TeamDTO> getAllTeams() {
+        return new ArrayList<>(teamDTOS);
     }
 
     @Override
-    public List<Team> getAllPlayers() {
-        return new ArrayList<>(players);
+    public List<PlayerDTO> getAllPlayers(String teamName) {
+        return playerDTOS.stream()
+                .filter(player -> player.getTeam().equalsIgnoreCase(teamName))
+                .toList();
     }
 
+
     @Override
-public void editPlayer(int playerID, Player player) {
- players.stream()
-           .filter(p -> p.getID() == playerID)  // Filter te player by id
-           .findFirst() 
-           .ifPresentOrElse(existingPlayer -> {
-               existingPlayer.setName(player.getName());
-               existingPlayer.setTeam(player.getTeam());
-               log.info("Player updated: {} in team {}", existingPlayer.getName(), existingPlayer.getTeam().getName());
-           }, () -> {
-               //if we could not found the player 
-               log.error("Player with ID {} not found", playerID);
-           });
-}
-@Override
-public void editTeam(int teamID, Team team) {
-    teams.stream()
-         .filter(t -> t.getID() == teamID)
-         .findFirst()
-         .ifPresent(existingTeam -> {
-             existingTeam.setName(team.getName());
-             existingTeam.setScore(team.getScore());
-         });
-    log.info("Team edited new team: {}", team);
-}
+    public void editPlayer(int playerID, PlayerDTO playerDTO) {
+        playerDTOS.stream()
+                .filter(p -> p.getId() == playerID)  // Filter te playerDTO by id
+                .findFirst()
+                .ifPresentOrElse(foundPlayer -> {
+                    foundPlayer.setName(playerDTO.getName());
+                    foundPlayer.setTeam(playerDTO.getTeam());
+                    log.info("Player updated, new Name: {}, new team: {}", foundPlayer.getName(), foundPlayer.getTeam());
+
+                }, () -> {
+                    //if we could not found the playerDTO
+                    log.error("Player with ID {} not found", playerID);
+                });
+    }
+
+
+    @Override
+    public void editTeam(int teamID, TeamDTO newTeamDTO) {
+        teamDTOS.stream()
+                .filter(team -> team.getID() == teamID)
+                .findFirst()
+                .ifPresentOrElse(foundTeam -> {
+                    foundTeam.setName(newTeamDTO.getName());
+                    foundTeam.setScore(newTeamDTO.getScore());
+                    log.info("Team with id {} updated, new name: {}, new score {}", teamID, foundTeam.getName(), foundTeam.getScore());
+                    log.info("Finish updating team with ID {} updated in Basket League", teamID);
+                }, () -> log.error("Team with ID {} not found", teamID));
+    }
+
     @Override
     public void deleteAllMatches() {
-        matches.clear();
-    }
-
-    @Override
-    public void deletePlayersOfATeam(int ID) {
-          teams.stream()
-         .filter(team -> team.getID() == teamID)
-         .findFirst()
-         .ifPresent(team -> players.removeIf(player -> player.getTeam().getID() == teamID)); // delete the player from that team.
+        matchDTOS.clear();
+        log.info("All match deleted from Basket League");
 
     }
 
     @Override
-    public int getTeamLimit() {
-        return 0;
+    public void deletePlayersOfATeam(String teamName) {
+        playerDTOS.removeIf(player -> player.getTeam().equalsIgnoreCase(teamName));
+        log.info("All player from team: {} were deleted in Basket League", teamName);
+    }
+
+    @PostConstruct
+    public void fillBasketLeagues() {
+
+        // Creating teamDTOS
+        TeamDTO teamDTO1 = new TeamDTO("team1", 0, 1);
+        TeamDTO teamDTO2 = new TeamDTO("team2", 0, 2);
+
+        //Creating playerDTOS
+        PlayerDTO playerDTO1 = new PlayerDTO(1, "Player1", teamDTO1.getName());
+        PlayerDTO playerDTO2 = new PlayerDTO(2, "Player2", teamDTO2.getName());
+
+        //Adding Players to teamDTOS
+        teamDTO1.addPlayer(playerDTO1);
+        teamDTO2.addPlayer(playerDTO2);
+
+        //Adding Teams to league basket
+        teamDTOS.add(teamDTO1);
+        teamDTOS.add(teamDTO2);
+
+        //Adding PlayerDTO to TeamDTO
+        playerDTOS.add(playerDTO1);
+        playerDTOS.add(playerDTO2);
+
+        //Creating MatchDTO for basket
+        MatchDTO basketMatchDTO = new MatchDTO(teamDTO1, teamDTO2);
+        matchDTOS.add(basketMatchDTO);
+
+        log.info("Basket league created and filled.");
     }
 }

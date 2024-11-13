@@ -1,4 +1,4 @@
-package com.iwaconsolti.league.demo.model;
+package com.iwaconsolti.league.demo.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,21 +10,21 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class Team {
+public class TeamDTO {
     @Getter
     private int ID;
     private int score;
     private String name;
-    private List<Player> players = new ArrayList<>();
+    private List<PlayerDTO> playerDTOS = new ArrayList<>();
 
-    public Team(String name, int score, int ID) {
+    public TeamDTO(String name, int score, int ID) {
         this.name = name;
-        this.score = score;
         this.ID = ID;
+        this.score = score;
     }
 
-    public void addPlayer(Player player){
-        players.add(player);
+    public void addPlayer(PlayerDTO playerDTO){
+        playerDTOS.add(playerDTO);
     }
 
 }
