@@ -9,6 +9,7 @@ import com.iwaconsolti.league.demo.service.ValidateService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class LeagueController {
         this.soccerLeague = soccerLeague;
         this.validateService = validateService;
     }
+
 
     @PostMapping("/{leagueName}/team")
     public String createTeam(@PathVariable String leagueName, @RequestBody TeamDTO teamDTO) {
@@ -91,20 +93,20 @@ public class LeagueController {
     }
 
     @GetMapping("/{leagueName}/team")
-    public List<TeamDTO> getAllTeams(@PathVariable String leagueName) {
+    public ResponseEntity<List<TeamDTO>> getAllTeams(@PathVariable String leagueName) {
+
         if (!validateService.leagueNameValidation(leagueName)) {
             log.error("Incorrect league: {}", leagueName);
-            return new ArrayList<>();
         }
 
         if ("basketleague".equalsIgnoreCase(leagueName)) {
-            return basketLeague.getTeamDTOS();
+            return ResponseEntity.ok(basketLeague.getAllTeams());
         } else if ("soccerleague".equalsIgnoreCase(leagueName)) {
-            return soccerLeague.getTeamDTOS();
+            return ResponseEntity.ok(soccerLeague.getAllTeams());
         }
 
         log.error("League {} doesn't exist", leagueName);
-        return new ArrayList<>();
+        return ResponseEntity.badRequest().body(new ArrayList<>());
     }
 
     @GetMapping("/{leagueName}/team/{teamName}/players")
