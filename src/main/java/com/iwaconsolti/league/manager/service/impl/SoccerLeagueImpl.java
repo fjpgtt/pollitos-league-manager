@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service("soccerLeague")
@@ -19,93 +18,148 @@ public class SoccerLeagueImpl implements ILeagues {
     private List<Players> players = new ArrayList<>();
     private List<Teams> teams = new ArrayList<>();
     private List<Matches> matches = new ArrayList<>();
+    private int nextPlayer = 1;
+    private int nextTeam = 1;
+    private int nextMatches = 1;
 
     @Override
     public Players savePlayers(Players player) {
-        Players existingPlayer = findPlayers(player.getId()).orElse(null);
-        if (existingPlayer == null) {
-            players.add(player);
+        player.setId(nextPlayer++);
+        players.add(player);
+        Teams team = findTeams(player.getTeamId());
+        if (team != null) {
+            if (team.getPlayers() == null) {
+                team.setPlayers(new ArrayList<>());
+            }
+            team.getPlayers().add(player);
         } else {
-            players.remove(existingPlayer);
-            Players newPlayer = new Players(player);
-            players.add(newPlayer);
+            log.error("Team not found");
         }
+
         return player;
     }
 
     @Override
-    public Optional<Players> findPlayers(Long id) {
-        return players.stream().filter(p -> p.getId().equals(id)).findFirst();
+    public Players findPlayers(int id) {
+        for (Players player : players) {
+            if (player.getId() == id) {
+                return player;
+            } else {
+                log.error("Player not found");
+            }
+        }
+
+        return null;
     }
 
     @Override
     public Teams saveTeams(Teams team) {
-        Teams existingTeam = findTeams(team.getId()).orElse(null);
-        if (existingTeam == null) {
-            teams.add(team);
-        } else {
-            teams.remove(existingTeam);
-            Teams newTeam = new Teams (team);
-            teams.add(newTeam);
-        }
+        team.setId(nextTeam++);
+        teams.add(team);
+
         return team;
     }
 
     @Override
-    public Optional <Teams> findTeams(Long id) {
-        return teams.stream().filter(p -> p.getId().equals(id)).findFirst();
+    public Teams findTeams(int id) {
+        for (Teams team : teams) {
+            if (team.getId() == id) {
+                return team;
+            } else {
+                log.error("Team not found");
+            }
+        }
+        return null;
     }
 
     @Override
     public Matches saveMatches(Matches match) {
-        Optional<Matches> existingMatch = findMatches(match.getTeam());
-
-        if (existingMatch.isEmpty()) {
-            matches.add(match);
-        } else {
-            matches.remove(existingMatch.get());
-            matches.add(new Matches(match));
-        }
-
+        match.setIdMatch(nextMatches++);
+        matches.add(match);
         return match;
     }
 
-    public Optional<Matches> findMatches(Teams team) {
-        return matches.stream().filter(m -> m.getTeam().equals(team)).findFirst();
+    public Matches findMatches(int id) {
+        for (Matches match : matches) {
+            if (match.getIdMatch() == id) {
+                return match;
+            } else {
+                log.error("Match not found");
+            }
+        }
+        return null;
     }
 
     @Override
-    public Players updatePlayer(Long id, Players player) {
-        Optional<Players> existingPlayer = findPlayers(id);
-        if (existingPlayer.isEmpty()) {
+    public List<Matches> getMatchesTeam(String nameTeam) {
+        List<Matches> matchesTeam = new ArrayList<>();
+
+        for (Matches match : matches) {
+            if (match.getNameTeam1().equals(nameTeam)) {
+                matchesTeam.add(match);
+            } else if (match.getNameTeam2().equals(nameTeam)) {
+                matchesTeam.add(match);
+            }
+        }
+
+        return matchesTeam;
+    }
+
+    @Override
+    public Players updatePlayer(int id, Players player) {
+        Players existingPlayer = findPlayers(id);
+        if (existingPlayer == null) {
             log.info("Player with id {} not found", id);
             return player;
         }
 
-        Players playerToUpdate = new Players(player);
-        playerToUpdate.setId(player.getId());
-        playerToUpdate.setName(player.getName());
-        playerToUpdate.setTeamId(player.getTeamId());
+        existingPlayer.setName(player.getName());
+        existingPlayer.setTeamId(player.getTeamId());
 
-        return playerToUpdate;
+        return existingPlayer;
     }
 
+    @Override
+    public Teams updateTeam(int id, Teams team) {
+        Teams existingTeam = findTeams(id);
+        if (existingTeam == null) {
+            log.info("Team with id {} not found", id);
+            return team;
+        }
+
+        existingTeam.setName(team.getName());
+
+        return existingTeam;
+    }
+
+
+    @Override
+    public List<Players> getPlayersTeam(int teamId) {
+        return players.stream().filter(player -> player.getTeamId() == teamId).collect(Collectors.toList());
+    }
+
+    @Override
+    public Teams deletePlayersTeam(int teamId) {
+        for (Teams team : teams) {
+            if (team.getId() == teamId) {
+                team.getPlayers().clear();
+                return team;
+            } else {
+                log.error("Team not found");
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<Matches> deleteAllMatches() {
+        matches.clear();
+        return matches;
+    }
 
     @Override
     public List<Teams> getAllTeams() {
         return new ArrayList<>(teams);
     }
-
-    @Override
-    public List<Matches> getAllMatches() {
-        return new ArrayList<>(matches);
-    }
-
-
-    @Override
-    public List<Players> getPlayersTeam(Long teamId) {
-        return players.stream().filter(player -> player.getTeamId().equals(teamId)).collect(Collectors.toList());
-    }
-
 
 }

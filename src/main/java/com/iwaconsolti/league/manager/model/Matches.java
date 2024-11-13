@@ -9,11 +9,14 @@ import java.util.Map;
 @NoArgsConstructor
 public class Matches {
 
-    private Teams team;
-    private Map <Long, Long> scoreTeam;
+    private int idMatch;
+    private String nameTeam1;
+    private String nameTeam2;
+    private Map<String, Integer> scoreTeam;
 
     public Matches(Matches match) {
-        this.team = match.getTeam();
+        this.nameTeam1 = match.getNameTeam1();
+        this.nameTeam2 = match.getNameTeam2();
         this.scoreTeam = match.getScoreTeam();
     }
 }

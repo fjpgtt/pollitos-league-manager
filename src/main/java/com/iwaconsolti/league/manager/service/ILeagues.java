@@ -11,26 +11,29 @@ public interface ILeagues {
 
     Players savePlayers(Players players);
 
-    Optional<Players> findPlayers(Long id);
+    Players findPlayers(int id);
 
     Teams saveTeams(Teams teams);
 
-    Optional <Teams> findTeams(Long id);
+    Teams findTeams(int id);
 
     Matches saveMatches(Matches matches);
 
-    Optional <Matches> findMatches(Teams team);
+    Matches findMatches(int id);
 
-    Players updatePlayer(Long id, Players players);
+    List<Matches> getMatchesTeam(String nameTeam);
 
+    Players updatePlayer(int id, Players players);
+
+    Teams updateTeam(int id, Teams team);
 
     List<Teams> getAllTeams();
 
+    Teams deletePlayersTeam(int teamId);
 
-    List<Matches> getAllMatches();
+    List<Matches> deleteAllMatches();
 
-    List<Players> getPlayersTeam(Long teamId);
-
+    List<Players> getPlayersTeam(int teamId);
 
 
 }

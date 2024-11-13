@@ -1,16 +1,12 @@
 package com.iwaconsolti.league.manager.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Players {
-    private Long id;
+    private int id;
     private String name;
-    private Long teamId;
+    private int teamId;
 
     public Players(Players players) {
         this.id = players.getId();
@@ -18,4 +14,8 @@ public class Players {
         this.teamId = players.getTeamId();
     }
 
+    public Players(String name, int teamId) {
+        this.name = name;
+        this.teamId = teamId;
+    }
 }
