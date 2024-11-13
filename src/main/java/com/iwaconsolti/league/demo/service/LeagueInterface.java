@@ -13,15 +13,12 @@ public interface LeagueInterface {
     void createMatch(Team team1, Team team2);
 
     List<Team> getAllTeams();
-    List<Team> getAllPlayers();
+    List<Player> getAllPlayers(String teamName);
 
     void editPlayer(int ID, Player player);
-    void editTeam(int ID, Team team);
+    void editTeam(int teamID, Team team);
 
     void deleteAllMatches();
-    void deletePlayersOfATeam(int ID);
-
-    //Testing: limit id property
-    int getTeamLimit();
+    void deletePlayersOfATeam(String teamName);
 
 }

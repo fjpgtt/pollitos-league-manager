@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 @ToString
 public class Team {
+    @Getter
     private int ID;
     private int score;
     private String name;

@@ -1,7 +1,5 @@
 package com.iwaconsolti.league.demo.service;
 
-import com.iwaconsolti.league.demo.service.repository.LeaguesRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,10 +28,10 @@ public class ValidateService {
     public boolean teamNameValidation(String teamName, String leagueName) {
 
         if ("basketleague".equalsIgnoreCase(leagueName)) {
-            log.info(basketLeague.getTeams().toString());
+            log.info("Team exists {}",basketLeague.getTeams().toString());
             return basketLeague.getTeams().stream().anyMatch((team -> team.getName().equalsIgnoreCase(teamName)));
         } else if ("soccerleague".equalsIgnoreCase(leagueName)) {
-
+            log.info("Team exists {}",soccerLeague.getTeams().toString());
             return soccerLeague.getTeams().stream().anyMatch((team -> team.getName().equalsIgnoreCase(teamName)));
         }
         return false;
