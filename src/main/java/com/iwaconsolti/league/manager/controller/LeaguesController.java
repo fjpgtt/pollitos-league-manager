@@ -6,13 +6,12 @@ import com.iwaconsolti.league.manager.model.Teams;
 import com.iwaconsolti.league.manager.service.ILeagues;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 
-@Profile("default")
 @RestController
 @RequestMapping(value = "/leagues/{leagueType}")
 @Slf4j
@@ -30,35 +29,36 @@ public class LeaguesController {
     @PostMapping("/team")
     public ResponseEntity<Teams> createTeam(@PathVariable String leagueType, @RequestBody Teams newTeam) {
         if (leagueType.equals("soccer")) {
-            Teams teamSoccer = soccerLeagues.saveTeams(newTeam);
-            log.info("Team created");
-            return ResponseEntity.ok(teamSoccer);
+            return ResponseEntity.ok(soccerLeagues.saveTeams(newTeam));
+        } else if (leagueType.equals("baseball")) {
+            return ResponseEntity.ok(baseBallLeague.saveTeams(newTeam));
         } else {
-            Teams teamBase = baseBallLeague.saveTeams(newTeam);
-            return ResponseEntity.ok(teamBase);
+            log.warn("League not found");
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping("/player")
     public ResponseEntity<Players> createPlayer(@PathVariable String leagueType, @RequestBody Players newPlayer) {
         if (leagueType.equals("soccer")) {
-            Players playerSoccer = soccerLeagues.savePlayers(newPlayer);
-            log.info("Player created");
-            return ResponseEntity.ok(playerSoccer);
+            return ResponseEntity.ok(soccerLeagues.savePlayers(newPlayer));
+        } else if (leagueType.equals("baseball")) {
+            return ResponseEntity.ok(baseBallLeague.savePlayers(newPlayer));
         } else {
-            Players playerBase = baseBallLeague.savePlayers(newPlayer);
-            return ResponseEntity.ok(playerBase);
+            log.warn("League not found");
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping("/match")
     public ResponseEntity<Matches> createMatch(@PathVariable String leagueType, @RequestBody Matches newMatch) {
         if (leagueType.equals("soccer")) {
-            Matches matchSoccer = soccerLeagues.saveMatches(newMatch);
-            return ResponseEntity.ok(matchSoccer);
+            return ResponseEntity.ok(soccerLeagues.saveMatches(newMatch));
+        } else if (leagueType.equals("baseball")) {
+            return ResponseEntity.ok(baseBallLeague.saveMatches(newMatch));
         } else {
-            Matches matchBase = baseBallLeague.saveMatches(newMatch);
-            return ResponseEntity.ok(matchBase);
+            log.warn("League not found");
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -66,26 +66,35 @@ public class LeaguesController {
     public ResponseEntity<List<Teams>> getAllTeams(@PathVariable String leagueType) {
         if (leagueType.equalsIgnoreCase("soccer")) {
             return ResponseEntity.ok(soccerLeagues.getAllTeams());
-        } else {
+        } else if (leagueType.equalsIgnoreCase("baseball")) {
             return ResponseEntity.ok(baseBallLeague.getAllTeams());
+        } else {
+            log.warn("League not found");
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/player/{teamId}")
-    public ResponseEntity<List<Players>> getPlayer(@PathVariable String leagueType, @PathVariable int teamId) {
+    public ResponseEntity<List<Players>> getPlayerByTeam(@PathVariable String leagueType, @PathVariable int teamId) {
         if (leagueType.equalsIgnoreCase("soccer")) {
             return ResponseEntity.ok(soccerLeagues.getPlayersTeam(teamId));
-        } else {
+        } else if (leagueType.equalsIgnoreCase("baseball")) {
             return ResponseEntity.ok(baseBallLeague.getPlayersTeam(teamId));
+        } else {
+            log.warn("League not found");
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/match/{teamName}")
-    public ResponseEntity<List<Matches>> getMatch(@PathVariable String leagueType, @PathVariable String teamName) {
+    public ResponseEntity<List<Matches>> getMatchTeam(@PathVariable String leagueType, @PathVariable String teamName) {
         if (leagueType.equalsIgnoreCase("soccer")) {
             return ResponseEntity.ok(soccerLeagues.getMatchesTeam(teamName));
-        } else {
+        } else if (leagueType.equalsIgnoreCase("baseball")) {
             return ResponseEntity.ok(baseBallLeague.getMatchesTeam(teamName));
+        } else {
+            log.warn("League not found");
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -93,8 +102,11 @@ public class LeaguesController {
     public ResponseEntity<Players> updatePlayer(@PathVariable String leagueType, @PathVariable int id, @RequestBody Players newPlayer) {
         if (leagueType.equalsIgnoreCase("soccer")) {
             return ResponseEntity.ok(soccerLeagues.updatePlayer(id, newPlayer));
-        } else {
+        } else if (leagueType.equalsIgnoreCase("baseball")) {
             return ResponseEntity.ok(baseBallLeague.updatePlayer(id, newPlayer));
+        } else {
+            log.warn("League not found");
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -102,8 +114,11 @@ public class LeaguesController {
     public ResponseEntity<Teams> updateTeam(@PathVariable String leagueType, @PathVariable int id, @RequestBody Teams newTeam) {
         if (leagueType.equalsIgnoreCase("soccer")) {
             return ResponseEntity.ok(soccerLeagues.updateTeam(id, newTeam));
-        } else {
+        } else if (leagueType.equalsIgnoreCase("baseball")) {
             return ResponseEntity.ok(baseBallLeague.updateTeam(id, newTeam));
+        } else {
+            log.warn("League not found");
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -111,8 +126,11 @@ public class LeaguesController {
     public ResponseEntity<Teams> deletePlayer(@PathVariable String leagueType, @PathVariable int teamId) {
         if (leagueType.equalsIgnoreCase("soccer")) {
             return ResponseEntity.ok(soccerLeagues.deletePlayersTeam(teamId));
-        } else {
+        } else if (leagueType.equalsIgnoreCase("baseball")) {
             return ResponseEntity.ok(baseBallLeague.deletePlayersTeam(teamId));
+        } else {
+            log.warn("League not found");
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -120,10 +138,14 @@ public class LeaguesController {
     public ResponseEntity<List<Matches>> deleteMatch(@PathVariable String leagueType) {
         if (leagueType.equalsIgnoreCase("soccer")) {
             return ResponseEntity.ok(soccerLeagues.deleteAllMatches());
-        } else {
+        } else if (leagueType.equalsIgnoreCase("baseball")) {
             return ResponseEntity.ok(baseBallLeague.deleteAllMatches());
+        } else {
+            log.warn("League not found");
+            return ResponseEntity.notFound().build();
         }
     }
+
 }
 
 

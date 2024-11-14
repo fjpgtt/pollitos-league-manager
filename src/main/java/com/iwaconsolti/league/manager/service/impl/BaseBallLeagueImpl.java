@@ -1,10 +1,12 @@
 package com.iwaconsolti.league.manager.service.impl;
 
+
 import com.iwaconsolti.league.manager.model.Matches;
 import com.iwaconsolti.league.manager.model.Players;
 import com.iwaconsolti.league.manager.model.Teams;
 import com.iwaconsolti.league.manager.service.ILeagues;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,6 +17,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BaseBallLeagueImpl implements ILeagues {
 
+    @Value("${league.teams.limit}")
+    private int teamLimit;
+
     private List<Players> players = new ArrayList<>();
     private List<Teams> teams = new ArrayList<>();
     private List<Matches> matches = new ArrayList<>();
@@ -24,6 +29,7 @@ public class BaseBallLeagueImpl implements ILeagues {
 
     @Override
     public Players savePlayers(Players player) {
+        log.debug("Saving player {}", player);
         player.setId(nextPlayer++);
         players.add(player);
         Teams team = findTeams(player.getTeamId());
@@ -33,7 +39,7 @@ public class BaseBallLeagueImpl implements ILeagues {
             }
             team.getPlayers().add(player);
         } else {
-            log.error("Team not found");
+            log.warn("Team not found");
         }
 
         return player;
@@ -45,7 +51,7 @@ public class BaseBallLeagueImpl implements ILeagues {
             if (player.getId() == id) {
                 return player;
             } else {
-                log.error("Player not found");
+                log.warn("Player not found");
             }
         }
 
@@ -54,6 +60,10 @@ public class BaseBallLeagueImpl implements ILeagues {
 
     @Override
     public Teams saveTeams(Teams team) {
+        if (teams.size() >= teamLimit) {
+            log.warn("Team limit exceeded");
+        }
+        log.debug("Saving team {}", team);
         team.setId(nextTeam++);
         teams.add(team);
 
@@ -66,7 +76,7 @@ public class BaseBallLeagueImpl implements ILeagues {
             if (team.getId() == id) {
                 return team;
             } else {
-                log.error("Team not found");
+                log.warn("Team not found");
             }
         }
         return null;
@@ -74,6 +84,7 @@ public class BaseBallLeagueImpl implements ILeagues {
 
     @Override
     public Matches saveMatches(Matches match) {
+        log.debug("Saving match {}", match);
         match.setIdMatch(nextMatches++);
         matches.add(match);
         return match;
@@ -84,7 +95,7 @@ public class BaseBallLeagueImpl implements ILeagues {
             if (match.getIdMatch() == id) {
                 return match;
             } else {
-                log.error("Match not found");
+                log.warn("Match not found");
             }
         }
         return null;
@@ -109,7 +120,7 @@ public class BaseBallLeagueImpl implements ILeagues {
     public Players updatePlayer(int id, Players player) {
         Players existingPlayer = findPlayers(id);
         if (existingPlayer == null) {
-            log.info("Player with id {} not found", id);
+            log.warn("Player with id {} not found", id);
             return player;
         }
 
@@ -123,7 +134,7 @@ public class BaseBallLeagueImpl implements ILeagues {
     public Teams updateTeam(int id, Teams team) {
         Teams existingTeam = findTeams(id);
         if (existingTeam == null) {
-            log.info("Team with id {} not found", id);
+            log.warn("Team with id {} not found", id);
             return team;
         }
 
@@ -145,7 +156,7 @@ public class BaseBallLeagueImpl implements ILeagues {
                 team.getPlayers().clear();
                 return team;
             } else {
-                log.error("Team not found");
+                log.warn("Team not found");
             }
         }
         return null;

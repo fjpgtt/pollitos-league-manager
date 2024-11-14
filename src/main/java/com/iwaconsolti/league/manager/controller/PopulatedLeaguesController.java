@@ -1,6 +1,5 @@
 package com.iwaconsolti.league.manager.controller;
 
-import com.iwaconsolti.league.manager.model.Matches;
 import com.iwaconsolti.league.manager.model.Players;
 import com.iwaconsolti.league.manager.model.Teams;
 import com.iwaconsolti.league.manager.service.ILeagues;
@@ -8,14 +7,11 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Profile("populated")
 @RestController
-@RequestMapping(value = "/leaguesP/{leagueType}")
+@RequestMapping(value = "/leagues/{leagueType}")
 @Slf4j
 public class PopulatedLeaguesController {
 
@@ -28,112 +24,32 @@ public class PopulatedLeaguesController {
         log.info("Populated LeaguesController created");
     }
 
-    @PostMapping("/team")
-    public ResponseEntity<Teams> createTeam(@PathVariable String leagueType, @RequestBody Teams newTeam) {
-        if (leagueType.equals("soccer")) {
-            Teams teamSoccer = soccerLeagues.saveTeams(newTeam);
-            log.info("Team created");
-            return ResponseEntity.ok(teamSoccer);
-        } else {
-            Teams teamBase = baseBallLeague.saveTeams(newTeam);
-            return ResponseEntity.ok(teamBase);
-        }
-    }
-
-    @PostMapping("/player")
-    public ResponseEntity<Players> createPlayer(@PathVariable String leagueType, @RequestBody Players newPlayer) {
-        if (leagueType.equals("soccer")) {
-            Players playerSoccer = soccerLeagues.savePlayers(newPlayer);
-            log.info("Player created");
-            return ResponseEntity.ok(playerSoccer);
-        } else {
-            Players playerBase = baseBallLeague.savePlayers(newPlayer);
-            return ResponseEntity.ok(playerBase);
-        }
-    }
-
-    @PostMapping("/match")
-    public ResponseEntity<Matches> createMatch(@PathVariable String leagueType, @RequestBody Matches newMatch) {
-        if (leagueType.equals("soccer")) {
-            Matches matchSoccer = soccerLeagues.saveMatches(newMatch);
-            return ResponseEntity.ok(matchSoccer);
-        } else {
-            Matches matchBase = baseBallLeague.saveMatches(newMatch);
-            return ResponseEntity.ok(matchBase);
-        }
-    }
-
-    @GetMapping("/team")
-    public ResponseEntity<List<Teams>> getAllTeams(@PathVariable String leagueType) {
-        if (leagueType.equalsIgnoreCase("soccer")) {
-            return ResponseEntity.ok(soccerLeagues.getAllTeams());
-        } else {
-            return ResponseEntity.ok(baseBallLeague.getAllTeams());
-        }
-    }
-
-    @GetMapping("/player/{teamId}")
-    public ResponseEntity<List<Players>> getPlayer(@PathVariable String leagueType, @PathVariable int teamId) {
-        if (leagueType.equalsIgnoreCase("soccer")) {
-            return ResponseEntity.ok(soccerLeagues.getPlayersTeam(teamId));
-        } else {
-            return ResponseEntity.ok(baseBallLeague.getPlayersTeam(teamId));
-        }
-    }
-
-    @GetMapping("/match/{teamName}")
-    public ResponseEntity<List<Matches>> getMatch(@PathVariable String leagueType, @PathVariable String teamName) {
-        if (leagueType.equalsIgnoreCase("soccer")) {
-            return ResponseEntity.ok(soccerLeagues.getMatchesTeam(teamName));
-        } else {
-            return ResponseEntity.ok(baseBallLeague.getMatchesTeam(teamName));
-        }
-    }
-
-    @PutMapping("/player/{id}")
-    public ResponseEntity<Players> updatePlayer(@PathVariable String leagueType, @PathVariable int id, @RequestBody Players newPlayer) {
-        if (leagueType.equalsIgnoreCase("soccer")) {
-            return ResponseEntity.ok(soccerLeagues.updatePlayer(id, newPlayer));
-        } else {
-            return ResponseEntity.ok(baseBallLeague.updatePlayer(id, newPlayer));
-        }
-    }
-
-    @PutMapping("/team/{id}")
-    public ResponseEntity<Teams> updateTeam(@PathVariable String leagueType, @PathVariable int id, @RequestBody Teams newTeam) {
-        if (leagueType.equalsIgnoreCase("soccer")) {
-            return ResponseEntity.ok(soccerLeagues.updateTeam(id, newTeam));
-        } else {
-            return ResponseEntity.ok(baseBallLeague.updateTeam(id, newTeam));
-        }
-    }
-
-    @DeleteMapping("/player/{teamId}")
-    public ResponseEntity<Teams> deletePlayer(@PathVariable String leagueType, @PathVariable int teamId) {
-        if (leagueType.equalsIgnoreCase("soccer")) {
-            return ResponseEntity.ok(soccerLeagues.deletePlayersTeam(teamId));
-        } else {
-            return ResponseEntity.ok(baseBallLeague.deletePlayersTeam(teamId));
-        }
-    }
-
-    @DeleteMapping("/matches")
-    public ResponseEntity<List<Matches>> deleteMatch(@PathVariable String leagueType) {
-        if (leagueType.equalsIgnoreCase("soccer")) {
-            return ResponseEntity.ok(soccerLeagues.deleteAllMatches());
-        } else {
-            return ResponseEntity.ok(baseBallLeague.deleteAllMatches());
-        }
-    }
-
     @PostConstruct
     public void postConstruct() {
 
         Teams team1 = new Teams("Los Atlas");
         Teams team2 = new Teams("Equipo Maravilla");
+        Teams team5 = new Teams("Los Reyes");
+        Teams team6 = new Teams("Equipo Yeah");
+        Teams team7 = new Teams("Equipo Foo");
+        Teams team8 = new Teams("Equipo Bar");
+        Teams team9 = new Teams("Equipo Basta");
+        Teams team10 = new Teams("Equipo Equipo");
+        Teams team11 = new Teams("Equipo Super");
+        Teams team12 = new Teams("Equipo 10");
+        Teams team13 = new Teams("Eq 11");
 
         soccerLeagues.saveTeams(team1);
         soccerLeagues.saveTeams(team2);
+        soccerLeagues.saveTeams(team5);
+        soccerLeagues.saveTeams(team6);
+        soccerLeagues.saveTeams(team7);
+        soccerLeagues.saveTeams(team8);
+        soccerLeagues.saveTeams(team9);
+        soccerLeagues.saveTeams(team10);
+        soccerLeagues.saveTeams(team11);
+        soccerLeagues.saveTeams(team12);
+        soccerLeagues.saveTeams(team13);
 
         Teams team3 = new Teams("Dogers");
         Teams team4 = new Teams("Yankis");
