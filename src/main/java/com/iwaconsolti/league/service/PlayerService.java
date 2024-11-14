@@ -1,27 +1,25 @@
 package com.iwaconsolti.league.service;
+
 import com.iwaconsolti.league.Config.PlayerConfig;
 import com.iwaconsolti.league.model.PlayerModel;
-import com.iwaconsolti.league.model.TeamModel;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
 public class PlayerService {
-    private PlayerConfig playerConfig;
-
+    private final PlayerConfig playerConfig;
     private final List<PlayerModel> playerList = new ArrayList<>();
 
-public PlayerService(PlayerConfig playerConfig){
-this.playerConfig = playerConfig;
-
-}
+    public PlayerService(PlayerConfig playerConfig) {
+        this.playerConfig = playerConfig;
+    }
 
     public PlayerModel insertPlayer(PlayerModel player) {
-        int teamid = player.getIdteam();
         this.playerList.add(player);
-        playerConfig.setLista(playerList);
+        playerConfig.setPlayerconfiglist(playerList);
         return player;
     }
 
@@ -40,24 +38,18 @@ this.playerConfig = playerConfig;
         return null;
     }
 
-
-
-    public PlayerModel getPlayerById(Integer playerTeam) {
-        if (playerTeam == null) {
-            System.out.println("El playerId proporcionado es null");
-            return null;
-        }
-
-        for (PlayerModel player : playerList) {
-            if (player.getIdteam() == playerTeam) {
-                return player;
+        public List<PlayerModel> getPlayersByTeamId(Integer playerTeam) {
+            if (playerTeam == null) {
+                System.out.println("The provided playerTeam ID is null");
+                return Collections.emptyList();
             }
+
+            List<PlayerModel> playersWithTeam = new ArrayList<>();
+            for (PlayerModel player : playerList) {
+                if (player.getIdteam() == playerTeam) {
+                    playersWithTeam.add(player);
+                }
+            }
+            return playersWithTeam;
         }
-        return null;
-
-    }
-    public List<PlayerModel> getPlayers() {
-        return playerList;
-    }
-
     }

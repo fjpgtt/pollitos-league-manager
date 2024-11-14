@@ -12,10 +12,5 @@ import java.util.List;
 @ConfigurationProperties(prefix = "teams")
 public class TeamConfig {
 
-    private List<TeamModel> lista;
-
-    public List<TeamModel> getLista() {
-        return lista;
-    }
-
+    private List<TeamModel> teamsconfiglist;
 }

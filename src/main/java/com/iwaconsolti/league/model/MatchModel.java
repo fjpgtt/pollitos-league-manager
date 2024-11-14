@@ -1,8 +1,6 @@
 package com.iwaconsolti.league.model;
-
 import lombok.Data;
 
-import java.util.List;
 
 @Data
 public class MatchModel {

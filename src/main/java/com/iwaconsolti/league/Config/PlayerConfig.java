@@ -3,7 +3,6 @@ import com.iwaconsolti.league.model.PlayerModel;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-
 import java.util.List;
 
 @Configuration
@@ -11,11 +10,8 @@ import java.util.List;
 @ConfigurationProperties(prefix = "players")
 public class PlayerConfig {
 
-    private List<PlayerModel> lista;
+    private List<PlayerModel> playerconfiglist;
 
-    public List<PlayerModel> getLista() {
-        return lista;
-    }
 }
 
 

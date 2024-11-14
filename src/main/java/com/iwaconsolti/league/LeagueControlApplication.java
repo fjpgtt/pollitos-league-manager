@@ -1,16 +1,18 @@
 package com.iwaconsolti.league;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.iwaconsolti.league.service.LeagueService;
-import org.springframework.beans.factory.annotation.Qualifier;
 import java.util.Scanner;
 
 @SpringBootApplication
 public class LeagueControlApplication implements CommandLineRunner {
 
+	private static final Logger logger = LoggerFactory.getLogger(LeagueControlApplication.class);
 	private final LeagueService leagueService;
 
 	@Autowired
@@ -20,42 +22,31 @@ public class LeagueControlApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		// Aquí preguntarás si las listas ya están llenas
 		Scanner scanner = new Scanner(System.in);
-
-		// Bucle mientras que el estado de las listas no esté completo
 		boolean listsFilled = false;
 
-		// Asegúrate de que no entre en un bucle infinito
 		while (!listsFilled) {
-			System.out.println("¿Las listas ya están llenas? (1 = Sí, 2 = No): ");
-			int respuesta = scanner.nextInt();
+			logger.debug("Waiting for user input to verify if the lists are filled...");
+			System.out.println("Are the lists filled? (1 = Yes, 2 = No): ");
+			int answer = scanner.nextInt();
 
-			if (respuesta == 1) {
-				// Si la respuesta es 1, las listas están llenas
+			if (answer == 1) {
 				listsFilled = true;
+				logger.info("Inserting the leagues into the beans...");
+				leagueService.insertLeague(leagueService.getSoccerLeague(), 1);
+				leagueService.insertLeague(leagueService.getBasketballLeague(), 2);
 
-				// Ahora, insertamos las ligas en los beans
-				System.out.println("Insertando las ligas en los beans...");
-				leagueService.insertLeague(leagueService.getSoccerLeague(),1); // Ejemplo de inserción
-				leagueService.insertLeague(leagueService.getBasketballLeague(),2); // Ejemplo de inserción
+				logger.info("Leagues inserted successfully");
+				logger.debug("Soccer League: {}", leagueService.getSoccerLeague());
+				logger.debug("Basketball League: {}", leagueService.getBasketballLeague());
 
-				System.out.println("Ligas insertadas correctamente!");
-
-				// Mostrar los datos de los beans insertados
-				System.out.println("Liga de Fútbol: " + leagueService.getSoccerLeague());
-				System.out.println("Liga de Baloncesto: " + leagueService.getBasketballLeague());
-
-			} else if (respuesta == 2) {
-				// Si la respuesta es 2, las listas no están llenas, se puede esperar
-				System.out.println("Esperando que las listas se llenen...");
-				Thread.sleep(2000); // Espera de 2 segundos antes de preguntar nuevamente (opcional)
+			} else if (answer == 2) {
+				logger.info("Waiting for the lists to be filled...");
+				Thread.sleep(2000);
 			} else {
-				// Respuesta inválida, repite la pregunta
-				System.out.println("Opción inválida. Por favor, ingresa 1 para Sí o 2 para No.");
+				logger.warn("Invalid option entered: {}. Please enter 1 for Yes or 2 for No.", answer);
 			}
 		}
-
 		scanner.close();
 	}
 
