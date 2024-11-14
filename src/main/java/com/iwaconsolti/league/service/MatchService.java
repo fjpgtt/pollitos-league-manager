@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 public class MatchService {
-    private final List<MatchModel> matchList = new ArrayList<>();
+    private List<MatchModel> matchList = new ArrayList<>();
     private final TeamService teamService;
     TeamModel teamvisit;
     TeamModel teamlocal;
@@ -19,6 +19,7 @@ public class MatchService {
     public MatchService(TeamService teamService,MatchConfig matchConfig) {
         this.teamService = teamService;
         this.matchConfig = matchConfig;
+        matchList = matchConfig.getMatchconfiglist();
     }
 
     public MatchModel insertMatch(MatchModel match) {

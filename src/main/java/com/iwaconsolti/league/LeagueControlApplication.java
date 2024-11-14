@@ -27,7 +27,7 @@ public class LeagueControlApplication implements CommandLineRunner {
 
 		while (!listsFilled) {
 			logger.debug("Waiting for user input to verify if the lists are filled...");
-			System.out.println("Are the lists filled? (1 = Yes, 2 = No): ");
+			logger.info("Are the lists filled? (1 = Yes, 2 = No): ");
 			int answer = scanner.nextInt();
 
 			if (answer == 1) {

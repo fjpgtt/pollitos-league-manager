@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class TeamService {
-    private final List<TeamModel> teamslist = new ArrayList<>();
+    private List<TeamModel> teamslist = new ArrayList<>();
     private final PlayerService playerService;
     private final TeamConfig teamConfig;
 
@@ -19,6 +19,7 @@ public class TeamService {
     public TeamService(PlayerService playerService, TeamConfig teamConfig) {
         this.playerService = playerService;
         this.teamConfig = teamConfig;
+        teamslist = teamConfig.getTeamsconfiglist();
     }
 
     public TeamModel insertTeam(TeamModel team) {

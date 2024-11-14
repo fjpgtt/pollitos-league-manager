@@ -11,10 +11,11 @@ import java.util.List;
 @Service
 public class PlayerService {
     private final PlayerConfig playerConfig;
-    private final List<PlayerModel> playerList = new ArrayList<>();
+    private List<PlayerModel> playerList = new ArrayList<>();
 
     public PlayerService(PlayerConfig playerConfig) {
         this.playerConfig = playerConfig;
+        playerList = playerConfig.getPlayerconfiglist();
     }
 
     public PlayerModel insertPlayer(PlayerModel player) {
