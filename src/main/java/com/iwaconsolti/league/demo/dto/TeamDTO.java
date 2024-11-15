@@ -11,7 +11,6 @@ import java.util.List;
 @Setter
 @ToString
 public class TeamDTO {
-    @Getter
     private int ID;
     private int score;
     private String name;

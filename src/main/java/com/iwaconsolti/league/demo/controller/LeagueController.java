@@ -92,21 +92,14 @@ public class LeagueController {
         return "League doesn't exist: Try soccerleague or basketleague";
     }
 
-    @GetMapping("/{leagueName}/team")
+    @GetMapping("/{leagueName}/teams")
     public ResponseEntity<List<TeamDTO>> getAllTeams(@PathVariable String leagueName) {
 
         if (!validateService.leagueNameValidation(leagueName)) {
             log.error("Incorrect league: {}", leagueName);
+            return ResponseEntity.badRequest().body(new ArrayList<>());
         }
-
-        if ("basketleague".equalsIgnoreCase(leagueName)) {
-            return ResponseEntity.ok(basketLeague.getAllTeams());
-        } else if ("soccerleague".equalsIgnoreCase(leagueName)) {
-            return ResponseEntity.ok(soccerLeague.getAllTeams());
-        }
-
-        log.error("League {} doesn't exist", leagueName);
-        return ResponseEntity.badRequest().body(new ArrayList<>());
+        return ("basketleague".equalsIgnoreCase(leagueName) ? ResponseEntity.ok(basketLeague.getAllTeams()) : ResponseEntity.ok(soccerLeague.getAllTeams()));
     }
 
     @GetMapping("/{leagueName}/team/{teamName}/players")
