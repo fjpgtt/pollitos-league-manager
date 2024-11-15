@@ -20,7 +20,7 @@ We need to create the following endpoints (in each request you should indicate w
 * Create a match
 * Get all the teams
 * Get all the players from a team
-* Get all the matches from a team
+* Get all the matches from a team 
 * Edit the player information
 * Edit the team information
 * Delete all the matches
