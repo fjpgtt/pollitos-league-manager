@@ -60,10 +60,7 @@ public class TeamService {
                     }
 
                     if (request.playerList() != null) {
-                        // Limpiar jugadores actuales
                         team.getPlayerList().clear();
-
-                        // Crear nuevos jugadores
                         List<Player> newPlayerList = request.playerList().stream()
                                 .map(playerRequest -> {
                                     Player player = new Player();

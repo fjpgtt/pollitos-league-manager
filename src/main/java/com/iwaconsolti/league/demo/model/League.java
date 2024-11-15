@@ -11,7 +11,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class League {
     private long id;
     private String name;

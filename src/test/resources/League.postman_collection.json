@@ -125,7 +125,7 @@
 					"response": []
 				},
 				{
-					"name": "Get All Teams",
+					"name": "Get teams by league",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -140,6 +140,28 @@
 								"leagues",
 								"1",
 								"teams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Team By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/leagues/1/teams/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"leagues",
+								"1",
+								"teams",
+								"1"
 							]
 						}
 					},
@@ -171,68 +193,6 @@
 								"1",
 								"teams",
 								"2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Team By Name",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/teams/name/Juan",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"teams",
-								"name",
-								"Juan"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Team By Id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/teams/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"teams",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get teams by league",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/leagues/1/teams",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"leagues",
-								"1",
-								"teams"
 							]
 						}
 					},

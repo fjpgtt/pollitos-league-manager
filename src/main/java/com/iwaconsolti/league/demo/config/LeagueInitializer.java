@@ -3,11 +3,12 @@ package com.iwaconsolti.league.demo.config;
 import com.iwaconsolti.league.demo.model.*;
 import com.iwaconsolti.league.demo.service.LeagueService;
 import com.iwaconsolti.league.demo.service.TeamService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
 
-@Component
+@Slf4j
 @Profile("populated")
 public class LeagueInitializer {
     private final LeagueService leagueService;
@@ -21,11 +22,14 @@ public class LeagueInitializer {
         initializeData();
     }
 
+    @PostConstruct
     private void initializeData() {
         League soccerLeague = new League();
         soccerLeague.setName("Soccer League");
         soccerLeague.setType(LeagueType.SOCCER);
+        log.info("maxTeams before set: " + maxTeams);
         soccerLeague.setMaxTeams(maxTeams);
+        log.info("maxTeams before set: " + maxTeams);
         League createdSoccerLeague = leagueService.createLeague(soccerLeague);
 
         Team soccerTeam1 = new Team();
@@ -62,7 +66,6 @@ public class LeagueInitializer {
         createdTeam2.getPlayerList().add(player3);
         createdTeam2.getPlayerList().add(player4);
 
-        // baseball
         League baseballLeague = new League();
         baseballLeague.setName("Baseball League");
         baseballLeague.setType(LeagueType.BASEBALL);
