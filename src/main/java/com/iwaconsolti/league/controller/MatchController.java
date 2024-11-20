@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/Match")
 @Slf4j
@@ -18,7 +20,7 @@ public class MatchController {
     }
 
     @GetMapping("/team/{id}")
-    public MatchModel getMatchById(@PathVariable int id) {
+    public List<MatchModel> getMatchById(@PathVariable int id) {
         return service.getMatchById(id);
     }
 
@@ -29,6 +31,6 @@ public class MatchController {
 
     @DeleteMapping("/matches")
     public boolean DeleteMatch() {
-        return service.deleteMatch();
+        return service.deleteAllMatches();
     }
 }

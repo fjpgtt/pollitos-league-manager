@@ -20,7 +20,7 @@ public class PlayerController {
     }
     @GetMapping("/{teamid}")
     public ResponseEntity<List<PlayerModel>> getPlayer(@PathVariable int teamid){
-        return ResponseEntity.ok(service.getPlayersByTeamId(teamid));
+        return ResponseEntity.ok(service.getPlayersByTeam(teamid));
     }
     @PostMapping("/")
     public PlayerModel addPlayer(@RequestBody PlayerModel playermodel) {
@@ -29,6 +29,10 @@ public class PlayerController {
     @PutMapping("/{id}")
     public PlayerModel updateTeam (@PathVariable int id, @RequestBody PlayerModel player) {
         return service.updatePlayer(id, player);
+    }
+    @DeleteMapping("/{id}")
+    public int deleteTeam (@PathVariable int id) {
+        return service.deletePlayersByTeamId(id);
     }
 
 }

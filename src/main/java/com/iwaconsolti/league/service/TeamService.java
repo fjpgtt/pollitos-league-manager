@@ -1,17 +1,25 @@
 package com.iwaconsolti.league.service;
+
 import com.iwaconsolti.league.Config.TeamConfig;
 import com.iwaconsolti.league.model.PlayerModel;
 import com.iwaconsolti.league.model.TeamModel;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
+
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 public class TeamService {
-    private List<TeamModel> teamslist = new ArrayList<>();
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     private final PlayerService playerService;
     private final TeamConfig teamConfig;
 
@@ -19,49 +27,62 @@ public class TeamService {
     public TeamService(PlayerService playerService, TeamConfig teamConfig) {
         this.playerService = playerService;
         this.teamConfig = teamConfig;
-        teamslist = teamConfig.getTeamsconfiglist();
     }
 
+    @Transactional
     public TeamModel insertTeam(TeamModel team) {
-        List<PlayerModel> players = playerService.getPlayer().stream()
-                .filter(player -> player.getIdteam() == team.getIdteam())
-                .collect(Collectors.toList());
-        team.setPlayers(players);
-        teamslist.add(team);
-        teamConfig.setTeamsconfiglist(teamslist);
+        String insertTeamSql = "INSERT INTO team (IDTEAM, ID_LEAGUE, TEAMNAME) VALUES (:idteam, :idleague, :name)";
+        Query query = entityManager.createNativeQuery(insertTeamSql);
+        query.setParameter("idteam", team.getIdteam());
+        query.setParameter("idleague", team.getIdLeague());
+        query.setParameter("name", team.getTeamname());
+        query.executeUpdate();
         return team;
     }
 
     public List<TeamModel> getTeam() {
-        return teamslist;
+        return entityManager.createQuery("SELECT t FROM TeamModel t", TeamModel.class)
+                .getResultList();
     }
 
+    @Transactional
     public TeamModel updateTeam(int id, TeamModel team) {
-        for (TeamModel aux : teamslist) {
-            if (aux.getIdteam() == id) {
-                aux.setIdteam(team.getIdteam());
-                aux.setTeamname(team.getTeamname());
-                aux.setPlayers(team.getPlayers());
-                return aux;
-            }
+        TeamModel existingTeam = entityManager.createQuery(
+                        "SELECT t FROM TeamModel t WHERE t.idteam = :id", TeamModel.class)
+                .setParameter("id", id)
+                .getSingleResult();
+
+        if (existingTeam != null) {
+            existingTeam.setIdteam(team.getIdteam());
+            existingTeam.setTeamname(team.getTeamname());
+            entityManager.merge(existingTeam);
+            return existingTeam;
         }
         return null;
     }
 
+    @Transactional
     public boolean deleteTeam(int id) {
-        for (TeamModel aux : teamslist) {
-            if (aux.getIdteam() == id) {
-                aux.setPlayers(Collections.emptyList());
-                return true;
-            }
+        TeamModel existingTeam = entityManager.createQuery(
+                        "SELECT t FROM TeamModel t WHERE t.idteam = :id", TeamModel.class)
+                .setParameter("id", id)
+                .getSingleResult();
+
+        if (existingTeam != null) {
+            entityManager.remove(existingTeam);
+            return true;
         }
-        return true;
+        return false;
     }
 
     public TeamModel getTeamById(int teamId) {
-        return teamslist.stream()
-                .filter(team -> team.getIdteam() == teamId)
-                .findFirst()
-                .orElse(null);
+        try {
+            return entityManager.createQuery(
+                            "SELECT t FROM TeamModel t WHERE t.idteam = :teamId", TeamModel.class)
+                    .setParameter("teamId", teamId)
+                    .getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

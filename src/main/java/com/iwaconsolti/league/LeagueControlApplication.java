@@ -7,9 +7,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.iwaconsolti.league.service.LeagueService;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
 import java.util.Scanner;
 
 @SpringBootApplication
+@EnableJpaRepositories(basePackages = "com.iwaconsolti.league.repository")
+@EntityScan(basePackages = "com.iwaconsolti.league.model")
 public class LeagueControlApplication implements CommandLineRunner {
 
 	private static final Logger logger = LoggerFactory.getLogger(LeagueControlApplication.class);
