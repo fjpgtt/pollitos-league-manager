@@ -24,7 +24,7 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 public class BasketLeague implements LeagueInterface {
-    @Value("${league.teamLimit}")
+    @Value("${league.teamLimit:10}")
     private int TEAMLIMIT;
 
     private final List<MatchDTO> matchDTOS = new ArrayList<>();

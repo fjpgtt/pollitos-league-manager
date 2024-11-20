@@ -25,7 +25,7 @@ public class ValidateService {
         return false;
     }
 
-    public boolean teamNameValidation(String teamName, String leagueName) {
+    public boolean validationteamName(String teamName, String leagueName) {
 
         if ("basketleague".equalsIgnoreCase(leagueName)) {
             log.info("Team exists {}",basketLeague.getTeamDTOS().toString());
