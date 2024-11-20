@@ -1,0 +1,485 @@
+{
+	"info": {
+		"_postman_id": "c389de00-283c-4fd9-a7c8-b61c2ea9f896",
+		"name": "R-league",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39697119"
+	},
+	"item": [
+		{
+			"name": "createTeam",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"const SCHEMA = { ",
+							"    \"type\" : \"object\",",
+							"    \"properties\" : {",
+							"        \"meals\": {\"type\": \"array\"}",
+							"    }",
+							"}",
+							"",
+							"pm.test('Schema is valid', function () {",
+							"    pm.response.to.have.jsonSchema(SCHEMA);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"TeamTest\",\n  \"score\": 0,\n  \"ID\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/league/basketleague/team",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"league",
+						"basketleague",
+						"team"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createPlayer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"const SCHEMA = { ",
+							"    \"type\" : \"object\",",
+							"    \"properties\" : {",
+							"        \"meals\": {\"type\": \"array\"}",
+							"    }",
+							"}",
+							"",
+							"pm.test('Schema is valid', function () {",
+							"    pm.response.to.have.jsonSchema(SCHEMA);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": 1,\n  \"name\": \"player1\",\n  \"team\": \"team2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/league/soccerleague/team3/player",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"league",
+						"soccerleague",
+						"team3",
+						"player"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createMatch",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"const SCHEMA = { ",
+							"    \"type\" : \"object\",",
+							"    \"properties\" : {",
+							"        \"meals\": {\"type\": \"array\"}",
+							"    }",
+							"}",
+							"",
+							"pm.test('Schema is valid', function () {",
+							"    pm.response.to.have.jsonSchema(SCHEMA);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"teamDTO1\": {\n    \"ID\": 1,\n    \"name\": \"team1\",\n    \"score\": 0,\n    \"players\": []\n  },\n  \"teamDTO2\": {\n    \"ID\": 2,\n    \"name\": \"team2\",\n    \"score\": 0,\n    \"players\": []\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/league/basketleague/match",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"league",
+						"basketleague",
+						"match"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getTeams",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"const SCHEMA = { ",
+							"    \"type\" : \"object\",",
+							"    \"properties\" : {",
+							"        \"meals\": {\"type\": \"array\"}",
+							"    }",
+							"}",
+							"",
+							"pm.test('Schema is valid', function () {",
+							"    pm.response.to.have.jsonSchema(SCHEMA);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/league/basketleague/team",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"league",
+						"basketleague",
+						"team"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getPlayers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"const SCHEMA = { ",
+							"    \"type\" : \"object\",",
+							"    \"properties\" : {",
+							"        \"meals\": {\"type\": \"array\"}",
+							"    }",
+							"}",
+							"",
+							"pm.test('Schema is valid', function () {",
+							"    pm.response.to.have.jsonSchema(SCHEMA);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/league/basketleague/team/team2/players",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"league",
+						"basketleague",
+						"team",
+						"team2",
+						"players"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getMatches",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"const SCHEMA = { ",
+							"    \"type\" : \"object\",",
+							"    \"properties\" : {",
+							"        \"meals\": {\"type\": \"array\"}",
+							"    }",
+							"}",
+							"",
+							"pm.test('Schema is valid', function () {",
+							"    pm.response.to.have.jsonSchema(SCHEMA);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/league/basketleague/matches",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"league",
+						"basketleague",
+						"matches"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "editPlayer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"const SCHEMA = { ",
+							"    \"type\" : \"object\",",
+							"    \"properties\" : {",
+							"        \"meals\": {\"type\": \"array\"}",
+							"    }",
+							"}",
+							"",
+							"pm.test('Schema is valid', function () {",
+							"    pm.response.to.have.jsonSchema(SCHEMA);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\":1,\n    \"name\":\"PlayerChanged\",\n    \"team\":\"TeamChanged\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/league/basketleague/team1/player/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"league",
+						"basketleague",
+						"team1",
+						"player",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "editTeam",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"const SCHEMA = { ",
+							"    \"type\" : \"object\",",
+							"    \"properties\" : {",
+							"        \"meals\": {\"type\": \"array\"}",
+							"    }",
+							"}",
+							"",
+							"pm.test('Schema is valid', function () {",
+							"    pm.response.to.have.jsonSchema(SCHEMA);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"TeamChanged\",\n    \"score\": 2,\n    \"ID\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/league/basketleague/team/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"league",
+						"basketleague",
+						"team",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteMatches",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"const SCHEMA = { ",
+							"    \"type\" : \"object\",",
+							"    \"properties\" : {",
+							"        \"meals\": {\"type\": \"array\"}",
+							"    }",
+							"}",
+							"",
+							"pm.test('Schema is valid', function () {",
+							"    pm.response.to.have.jsonSchema(SCHEMA);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/league/basketleague/delete/matches",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"league",
+						"basketleague",
+						"delete",
+						"matches"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
