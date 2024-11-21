@@ -1,5 +1,8 @@
 package com.iwaconsolti.league.demo.dto;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -7,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Random;
 
-@Slf4j
 @Setter
 @Getter
 @ToString
