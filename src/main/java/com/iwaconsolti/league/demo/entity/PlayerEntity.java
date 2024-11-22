@@ -10,7 +10,6 @@ import lombok.ToString;
 @Table(name="players")
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 public class PlayerEntity {
     @Id
@@ -18,6 +17,7 @@ public class PlayerEntity {
     private long ID;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
+
+    @Column(name="teamName",nullable = false)
     private String team;
 }

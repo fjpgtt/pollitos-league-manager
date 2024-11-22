@@ -1,9 +1,7 @@
 package com.iwaconsolti.league.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +10,7 @@ import java.util.List;
 @Table(name="teams")
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
 public class TeamEntity {
     @Id
@@ -22,7 +21,10 @@ public class TeamEntity {
     @Column(nullable = false)
     private int score;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "team_id")
+    @OneToMany(mappedBy = "team")
     private List<PlayerEntity> players = new ArrayList<>();
+
+
+    public TeamEntity(long id, String name, int score) {
+    }
 }

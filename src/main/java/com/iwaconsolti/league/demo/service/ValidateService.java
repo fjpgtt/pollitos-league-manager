@@ -1,5 +1,6 @@
 package com.iwaconsolti.league.demo.service;
 
+import com.iwaconsolti.league.demo.repository.TeamRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,16 +9,14 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ValidateService {
 
-    private final BasketLeague basketLeague;
-    private final SoccerLeague soccerLeague;
+    private final TeamRepository teamRepository;
 
     @Autowired
-    public ValidateService(BasketLeague basketLeague, SoccerLeague soccerLeague) {
-        this.basketLeague = basketLeague;
-        this.soccerLeague = soccerLeague;
+    public ValidateService(TeamRepository teamRepository) {
+        this.teamRepository = teamRepository;
     }
 
-    public boolean leagueNameValidation(String leagueName) {
+    public boolean validationLeagueName(String leagueName) {
         if ("basketleague".equalsIgnoreCase(leagueName) || "soccerleague".equalsIgnoreCase(leagueName)) {
             return true;
         }
@@ -25,15 +24,14 @@ public class ValidateService {
         return false;
     }
 
-    public boolean validationteamName(String teamName, String leagueName) {
-
-        if ("basketleague".equalsIgnoreCase(leagueName)) {
-            log.info("Team exists {}",basketLeague.getTeamDTOS().toString());
-            return basketLeague.getTeamDTOS().stream().anyMatch((team -> team.getName().equalsIgnoreCase(teamName)));
-        } else if ("soccerleague".equalsIgnoreCase(leagueName)) {
-            log.info("Team exists {}",soccerLeague.getTeamDTOS().toString());
-            return soccerLeague.getTeamDTOS().stream().anyMatch((team -> team.getName().equalsIgnoreCase(teamName)));
+    public boolean validationTeamName(String teamName, String leagueName) {
+        if (validationLeagueName(leagueName)) {
+            log.info("Team '{}' exists in league '{}'", teamName, leagueName);
+            return teamRepository.existsByName(teamName);
         }
+        log.error("Invalid league name: {}", leagueName);
         return false;
     }
-}
+
+    }
+

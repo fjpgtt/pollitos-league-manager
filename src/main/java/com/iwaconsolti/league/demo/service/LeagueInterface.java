@@ -16,8 +16,8 @@ public interface LeagueInterface {
     List<TeamDTO> getAllTeams();
     List<PlayerDTO> getAllPlayers(String teamName);
 
-    void editPlayer(int ID, PlayerDTO playerDTO);
-    void editTeam(int teamID, TeamDTO teamDTO);
+    void editPlayer(long ID, PlayerDTO playerDTO);
+    void editTeam(long teamID, TeamDTO teamDTO);
 
     void deleteAllMatches();
     void deletePlayersOfATeam(String teamName);

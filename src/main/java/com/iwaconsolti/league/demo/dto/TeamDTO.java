@@ -12,12 +12,12 @@ import java.util.List;
 @Setter
 @ToString
 public class TeamDTO {
-    private int ID;
+    private long ID;
     private int score;
     private String name;
     private List<PlayerDTO> playerDTOS = new ArrayList<>();
 
-    public TeamDTO(String name, int score, int ID) {
+    public TeamDTO(String name, int score, long ID) {
         this.name = name;
         this.ID = ID;
         this.score = score;

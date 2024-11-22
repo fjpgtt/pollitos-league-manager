@@ -76,7 +76,7 @@ public class SoccerLeague implements LeagueInterface {
     }
 
     @Override
-    public void editPlayer(int playerID, PlayerDTO playerDTO) {
+    public void editPlayer(long playerID, PlayerDTO playerDTO) {
         playerDTOS.stream()
                 .filter(p -> p.getId() == playerID)  // Filter te playerDTO by id
                 .findFirst()
@@ -91,7 +91,7 @@ public class SoccerLeague implements LeagueInterface {
     }
 
     @Override
-    public void editTeam(int teamID, TeamDTO newTeamDTO) {
+    public void editTeam(long teamID, TeamDTO newTeamDTO) {
         teamDTOS.stream()
                 .filter(team -> team.getID() == teamID)
                 .findFirst()

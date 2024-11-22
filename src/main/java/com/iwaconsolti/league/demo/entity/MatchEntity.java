@@ -1,10 +1,13 @@
 package com.iwaconsolti.league.demo.entity;
 
-import com.iwaconsolti.league.demo.dto.TeamDTO;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name="matches")
+@Getter
+@Setter
 public class MatchEntity {
 
     @Id
