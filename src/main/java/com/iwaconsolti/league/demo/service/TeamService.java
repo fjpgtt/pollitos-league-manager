@@ -4,78 +4,72 @@ import com.iwaconsolti.league.demo.dto.request.TeamUpdateRequest;
 import com.iwaconsolti.league.demo.model.League;
 import com.iwaconsolti.league.demo.model.Player;
 import com.iwaconsolti.league.demo.model.Team;
+import com.iwaconsolti.league.demo.repository.LeagueRepository;
+import com.iwaconsolti.league.demo.repository.PlayerRepository;
+import com.iwaconsolti.league.demo.repository.TeamRepository;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class TeamService {
-    private final LeagueService leagueService;
-    private final List<Team> teamList = new ArrayList<>();
-    private long nextId = 1L;
+    private final TeamRepository teamRepository;
+    private final LeagueRepository leagueRepository;
+    private final PlayerRepository playerRepository;
 
-
-    public TeamService(LeagueService leagueService) {
-        this.leagueService = leagueService;
+    public TeamService(TeamRepository teamRepository, LeagueRepository leagueRepository, PlayerRepository playerRepository) {
+        this.teamRepository = teamRepository;
+        this.leagueRepository = leagueRepository;
+        this.playerRepository = playerRepository;
     }
 
     public Team createTeam(long leagueId, Team team) {
-        League league = leagueService.findLeagueById(leagueId)
+        League league = leagueRepository.findById(leagueId)
                 .orElseThrow(() -> new IllegalArgumentException("League not found"));
 
-        if (!leagueService.canAddTeamToLeague(league)) {
+        if (league.getTeamList().size() >= league.getMaxTeams()) {
             throw new IllegalStateException("League has reached maximum team capacity");
         }
 
-        team.setId(nextId++);
         team.setLeague(league);
-        teamList.add(team);
-        league.getTeamList().add(team);
-        return team;
+        return teamRepository.save(team);
     }
 
     public Optional<Team> findTeamById(long leagueId, long teamId) {
-        return teamList.stream()
-                .filter(team -> team.getId() == (teamId) &&
-                        team.getLeague().getId() == (leagueId))
-                .findFirst();
+        return teamRepository.findById(teamId)
+                .filter(team -> team.getLeague().getId() == leagueId);
     }
 
     public List<Team> findTeamsByLeague(long leagueId) {
-        return teamList.stream()
-                .filter(team -> team.getLeague().getId() == (leagueId))
-                .toList();
+        return teamRepository.findAll().stream()
+                .filter(team -> team.getLeague().getId() == leagueId)
+                .collect(Collectors.toList());
     }
 
     public Team updateTeam(long leagueId, long teamId, TeamUpdateRequest request) {
-        return teamList.stream()
-                .filter(team -> team.getId() == teamId &&
-                        team.getLeague().getId() == leagueId)
-                .findFirst()
-                .map(team -> {
-                    if (request.name() != null) {
-                        team.setName(request.name());
-                    }
-
-                    if (request.playerList() != null) {
-                        team.getPlayerList().clear();
-                        List<Player> newPlayerList = request.playerList().stream()
-                                .map(playerRequest -> {
-                                    Player player = new Player();
-                                    player.setId(nextId++);
-                                    player.setName(playerRequest.name());
-                                    player.setTeam(team);
-                                    return player;
-                                })
-                                .collect(Collectors.toList());
-
-                        team.setPlayerList(newPlayerList);
-                    }
-
-                    return team;
-                })
+        Team team = teamRepository.findById(teamId)
+                .filter(t -> t.getLeague().getId() == leagueId)
                 .orElseThrow(() -> new IllegalArgumentException("Team not found in league"));
+
+        if (request.name() != null) {
+            team.setName(request.name());
+        }
+
+        if (request.playerList() != null) {
+            team.getPlayerList().clear();
+            List<Player> newPlayerList = request.playerList().stream()
+                    .map(playerRequest -> {
+                        Player player = new Player();
+                        player.setName(playerRequest.name());
+                        player.setTeam(team);
+                        return playerRepository.save(player);
+                    })
+                    .collect(Collectors.toList());
+            team.setPlayerList(newPlayerList);
+        }
+
+        return teamRepository.save(team);
     }
 }

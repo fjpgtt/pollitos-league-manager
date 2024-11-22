@@ -359,6 +359,43 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "H2",
+			"item": [
+				{
+					"name": "H2 Create Player",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Jugador 1\",\r\n    \"team\": {\r\n        \"id\": 1\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/leagues/1/teams/1/players",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"leagues",
+								"1",
+								"teams",
+								"1",
+								"players"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

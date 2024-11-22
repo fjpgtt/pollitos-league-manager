@@ -23,7 +23,6 @@ public class TeamController {
 
     private final TeamService teamService;
 
-
     @PostMapping
     public ResponseEntity<TeamResponse> createTeam(
             @PathVariable long leagueId,

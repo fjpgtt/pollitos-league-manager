@@ -42,15 +42,12 @@ public class PlayerController {
     public ResponseEntity<List<PlayerResponse>> findPlayersByTeam(
             @PathVariable long leagueId,
             @PathVariable long teamId) {
-        try {
-            List<PlayerResponse> playerResponseList = playerService.findPlayersByTeam(leagueId, teamId)
-                    .stream()
-                    .map(this::convertToResponse)
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(playerResponseList);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
+        log.info("Finding players for team {} in league {}", teamId, leagueId);
+        List<PlayerResponse> playerResponseList = playerService.findPlayersByTeam(leagueId, teamId)
+                .stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(playerResponseList);
     }
 
     @PutMapping("/{playerId}")
@@ -75,13 +72,9 @@ public class PlayerController {
     public ResponseEntity<Void> deletePlayersFromTeam(
             @PathVariable long leagueId,
             @PathVariable long teamId) {
-        try {
-            playerService.deletePlayersFromTeam(leagueId, teamId);
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            log.error("Error deleting players: {}", e.getMessage());
-            return ResponseEntity.notFound().build();
-        }
+        log.info("Deleting all players from team {} in league {}", teamId, leagueId);
+        playerService.deletePlayersFromTeam(leagueId, teamId);
+        return ResponseEntity.ok().build();
     }
 
     private PlayerResponse convertToResponse(Player player) {

@@ -31,22 +31,9 @@ public class MatchController {
         try {
             log.info("Creating match in league {}", leagueId);
 
-            League league = leagueService.findLeagueById(leagueId)
-                    .orElseThrow(() -> new IllegalArgumentException("Liga no encontrada"));
-
-            Team homeTeam = league.getTeamList().stream()
-                    .filter(team -> team.getId() == request.homeTeamId())
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Equipo local no encontrado en la liga"));
-
-            Team awayTeam = league.getTeamList().stream()
-                    .filter(team -> team.getId() == request.awayTeamId())
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Equipo visitante no encontrado en la liga"));
-
             Match match = new Match();
-            match.setHomeTeam(homeTeam);
-            match.setAwayTeam(awayTeam);
+            match.setHomeTeam(new Team(request.homeTeamId()));
+            match.setAwayTeam(new Team(request.awayTeamId()));
             match.setHomeScore(request.homeScore());
             match.setAwayScore(request.awayScore());
 
@@ -57,7 +44,6 @@ public class MatchController {
             return ResponseEntity.badRequest().build();
         }
     }
-
     @DeleteMapping
     public ResponseEntity<Void> deleteAllMatches(@PathVariable long leagueId) {
         try {

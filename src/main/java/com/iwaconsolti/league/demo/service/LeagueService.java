@@ -1,33 +1,33 @@
 package com.iwaconsolti.league.demo.service;
 
 import com.iwaconsolti.league.demo.model.League;
+import com.iwaconsolti.league.demo.repository.LeagueRepository;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class LeagueService {
-    private final List<League> leagueList = new ArrayList<>();
-    private long nextId = 1L;
+    private final LeagueRepository leagueRepository;
+
+    public LeagueService(LeagueRepository leagueRepository) {
+        this.leagueRepository = leagueRepository;
+    }
 
     public League createLeague(League league) {
         if (league.getMaxTeams() <= 0) {
             league.setMaxTeams(10);
         }
-        league.setId(nextId++);
-        leagueList.add(league);
-        return league;
+        return leagueRepository.save(league);
     }
 
     public Optional<League> findLeagueById(long id) {
-        return leagueList.stream()
-                .filter(league -> league.getId() == (id))
-                .findFirst();
+        return leagueRepository.findById(id);
     }
 
     public List<League> findAllLeagues() {
-        return new ArrayList<>(leagueList);
+        return leagueRepository.findAll();
     }
 
     public boolean canAddTeamToLeague(League league) {

@@ -3,25 +3,25 @@ package com.iwaconsolti.league.demo.service;
 import com.iwaconsolti.league.demo.model.League;
 import com.iwaconsolti.league.demo.model.Match;
 import com.iwaconsolti.league.demo.model.Team;
-import lombok.extern.slf4j.Slf4j;
+import com.iwaconsolti.league.demo.repository.LeagueRepository;
+import com.iwaconsolti.league.demo.repository.MatchRepository;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 public class MatchService {
-    private final LeagueService leagueService;
+    private final MatchRepository matchRepository;
+    private final LeagueRepository leagueRepository;
 
-    private final List<Match> matchList = new ArrayList<>();
-    private long nextId = 1L;
-
-    public MatchService(LeagueService leagueService) {
-        this.leagueService = leagueService;
+    public MatchService(MatchRepository matchRepository, LeagueRepository leagueRepository) {
+        this.matchRepository = matchRepository;
+        this.leagueRepository = leagueRepository;
     }
+
     public Match createMatch(long leagueId, Match match) {
-        League league = leagueService.findLeagueById(leagueId)
+        League league = leagueRepository.findById(leagueId)
                 .orElseThrow(() -> new IllegalArgumentException("Liga no encontrada"));
 
         Team homeTeam = league.getTeamList().stream()
@@ -36,41 +36,30 @@ public class MatchService {
 
         validateTeamsInSameLeague(homeTeam, awayTeam, league);
 
-        match.setId(nextId++);
         match.setLeague(league);
-        matchList.add(match);
-        league.getMatchList().add(match);
-        return match;
+        return matchRepository.save(match);
     }
 
     public void deleteAllMatchesFromLeague(long leagueId) {
-        League league = leagueService.findLeagueById(leagueId)
-                .orElseThrow(() -> new IllegalArgumentException("League not found"));
+        League league = leagueRepository.findById(leagueId)
+                .orElseThrow(() -> new IllegalArgumentException("Liga no encontrada"));
 
-        matchList.removeIf(match -> match.getLeague().equals(league));
-        league.getMatchList().clear();
-    }
-
-    private void validateTeamsInSameLeague(Team homeTeam, Team awayTeam, League league) {
-        Team foundHomeTeam = league.getTeamList().stream()
-                .filter(team -> team.getId() == (homeTeam.getId()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Home team not found in league"));
-
-        Team foundAwayTeam = league.getTeamList().stream()
-                .filter(team -> team.getId() == (awayTeam.getId()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Away team not found in league"));
+        matchRepository.deleteAll(league.getMatchList());
     }
 
     public List<Match> findMatchesByTeam(long leagueId, long teamId) {
-        League league = leagueService.findLeagueById(leagueId)
-                .orElseThrow(() -> new IllegalArgumentException("League not found"));
+        League league = leagueRepository.findById(leagueId)
+                .orElseThrow(() -> new IllegalArgumentException("Liga no encontrada"));
 
-        return matchList.stream()
-                .filter(match -> match.getLeague().getId() == (leagueId) &&
-                        (match.getHomeTeam().getId() == (teamId) ||
-                                match.getAwayTeam().getId() == (teamId)))
+        return matchRepository.findAll().stream()
+                .filter(match -> match.getLeague().getId() == leagueId &&
+                        (match.getHomeTeam().getId() == teamId || match.getAwayTeam().getId() == teamId))
                 .collect(Collectors.toList());
+    }
+
+    private void validateTeamsInSameLeague(Team homeTeam, Team awayTeam, League league) {
+        if (!league.getTeamList().contains(homeTeam) || !league.getTeamList().contains(awayTeam)) {
+            throw new IllegalArgumentException("Ambos equipos deben pertenecer a la misma liga");
+        }
     }
 }
