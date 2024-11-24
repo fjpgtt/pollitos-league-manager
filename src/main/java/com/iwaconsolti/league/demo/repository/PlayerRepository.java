@@ -14,4 +14,5 @@ public interface PlayerRepository extends JpaRepository<PlayerEntity, Long> {
 
     @Query("DELETE FROM PlayerEntity p WHERE p.team = :teamName")
     void deleteByTeam(@Param("teamName") String teamName);
+
 }

@@ -1,12 +1,11 @@
 package com.iwaconsolti.league.demo.dto;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Setter
 @Getter
+@NoArgsConstructor
 public class PlayerDTO {
     private long id;
     private String name;
@@ -19,4 +18,6 @@ public class PlayerDTO {
         this.team = team;
     }
 
+    public PlayerDTO(long id, String name) {
+    }
 }

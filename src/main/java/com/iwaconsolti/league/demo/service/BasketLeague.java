@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SequencedCollection;
 
 @Profile("populated")
 @Service("basketleague")
@@ -31,35 +30,34 @@ public class BasketLeague implements LeagueInterface {
     @Value("${league.teamLimit:10}")
     private int TEAMLIMIT;
 
-    private final TeamRepository teamRepository;
+    //Services
+    private final TeamService teamService;
+
+
     private final PlayerRepository playerRepository;
+    private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
 
+
     @Autowired
-    public BasketLeague(TeamRepository teamRepository, PlayerRepository playerRepository, MatchRepository matchRepository) {
-        this.teamRepository = teamRepository;
+    public BasketLeague(TeamService teamService, PlayerRepository playerRepository, TeamRepository teamRepository, MatchRepository matchRepository) {
+        this.teamService = teamService;
+
         this.playerRepository = playerRepository;
+        this.teamRepository = teamRepository;
         this.matchRepository = matchRepository;
     }
 
     @Override
     public void createTeam(TeamDTO teamDTO) {
-        if (teamRepository.count() >= TEAMLIMIT) {
-            log.error("You reached the max of team per league, max: {}", TEAMLIMIT);
-        } else {
-            TeamEntity teamEntity = new TeamEntity();
-            teamEntity.setName(teamDTO.getName());
-            teamEntity.setScore(teamDTO.getScore());
-            teamRepository.save(teamEntity);
-            log.info("Team {} added to Basket League", teamDTO.getName());
-        }
+        teamService.createTeam(teamDTO);
     }
 
     @Override
     public void createPlayer(PlayerDTO playerDTO) {
         PlayerEntity playerEntity = new PlayerEntity();
         playerEntity.setName(playerDTO.getName());
-        playerEntity.setTeam(playerDTO.getTeam());
+//        playerEntity.setTeam(playerDTO.getTeam());
         playerEntity.setID(playerDTO.getId());
         playerRepository.save(playerEntity);
 
@@ -80,18 +78,12 @@ public class BasketLeague implements LeagueInterface {
 
     }
 
+    //-----donde
     @Override
     public List<TeamDTO> getAllTeams() {
-        List<TeamEntity> teamEntities = teamRepository.findAll();
-        List<TeamDTO> teamDTOS = new ArrayList<>();
-        for (TeamEntity teamEntity : teamEntities) {
-            teamDTOS.add(new TeamDTO(teamEntity.getName(), teamEntity.getScore(), teamEntity.getID()));
-        }
-        log.info("Returning all the teams in the repository");
-        return teamDTOS;
-
+        return teamService.getAllTeams();
     }
-
+    //-----donde
     @Override
     public List<PlayerDTO> getAllPlayers(String teamName) {
         log.info("Returning all players from Basket League Team: {}", teamName);
@@ -99,17 +91,24 @@ public class BasketLeague implements LeagueInterface {
         List<PlayerEntity> playerEntities = playerRepository.findAll();
         List<PlayerDTO> playersDTO = new ArrayList<>();
         for (PlayerEntity playerEntity : playerEntities) {
-            playersDTO.add(new PlayerDTO(playerEntity.getID(), playerEntity.getName(), playerEntity.getTeam()));
+            playersDTO.add(new PlayerDTO(playerEntity.getID(), playerEntity.getName(), playerEntity.getTeam().getName()));
         }
         return playersDTO;
     }
 
     @Override
+    public List<PlayerDTO> getPlayersByTeam(String teamName) {
+        return teamService.getPlayersByTeam(teamName);
+    }
+
+    //-----donde
+    @Override
     public void editPlayer(long playerID, PlayerDTO playerDTO) {
+        int random = ((int) (Math.random() * 101));
         PlayerEntity playerEntity = playerRepository.findById(playerID).orElse(null);
         if (playerEntity != null) {
             playerEntity.setName(playerDTO.getName());
-            playerEntity.setTeam(playerDTO.getTeam());
+            playerEntity.setTeam(new TeamEntity(random, playerDTO.getTeam(), 0));
             playerRepository.save(playerEntity);
             log.info("Player updated: {}", playerDTO.getName());
         } else {
@@ -117,30 +116,23 @@ public class BasketLeague implements LeagueInterface {
         }
     }
 
-
+    //-----donde
     @Override
     public void editTeam(long teamID, TeamDTO newTeamDTO) {
-        TeamEntity teamEntity = teamRepository.findById(teamID).orElse(null);
-        if (teamEntity != null) {
-            teamEntity.setName(newTeamDTO.getName());
-            teamEntity.setScore(newTeamDTO.getScore());
-            teamRepository.save(teamEntity);
-            log.info("Team with ID: {} has been updated.", teamID);
-        }
-        log.info("Team with ID: {} not found", teamID);
-
+        teamService.editTeam(teamID, newTeamDTO);
     }
 
+    //-----donde
     @Override
     public void deleteAllMatches() {
         matchRepository.deleteAll();
         log.info("All match deleted from Basket League");
-
     }
 
+    //-----donde
     @Override
     public void deletePlayersOfATeam(String teamName) {
-        playerRepository.deleteAll();
+        playerRepository.deleteByTeam(teamName);
         log.info("All player from team: {} were deleted in Basket League", teamName);
     }
 
@@ -153,46 +145,45 @@ public class BasketLeague implements LeagueInterface {
                 .toList();
     }
 
-    public List<TeamEntity> getPlayersByTeam(String teamName) {
-        log.info("Teams found: {}", teamName);
-        return teamRepository.findByName(teamName);
-    }
-
-
     @PostConstruct
     public void fillBasketLeagues() {
-// Creating players for Team 1
+        // Creating players for Team 1
         PlayerEntity player1 = new PlayerEntity();
         player1.setName("Player1");
 
         PlayerEntity player2 = new PlayerEntity();
         player2.setName("Player2");
 
-// Creating players for Team 2
+        // Creating players for Team 2
         PlayerEntity player3 = new PlayerEntity();
         player3.setName("Player3");
 
         PlayerEntity player4 = new PlayerEntity();
         player4.setName("Player4");
 
-// Creating teams
-        TeamEntity team1 = new TeamEntity(1, "Team1", 0, new ArrayList<>(List.of(player1, player2)));
-        TeamEntity team2 = new TeamEntity(2, "Team2", 0, new ArrayList<>(List.of(player3, player4)));
+        // Creating teams
+        TeamEntity team1 = new TeamEntity(1, "Team1", 0, new ArrayList<>());
+        TeamEntity team2 = new TeamEntity(2, "Team2", 0, new ArrayList<>());
+
+        // Setting team names for each player (assigning players to their respective teams)
+        player1.setTeam(team1);
+        player2.setTeam(team1);
+        player3.setTeam(team2);
+        player4.setTeam(team2);
+
+        // Adding players to the teams
+        team1.getPlayers().add(player1);
+        team1.getPlayers().add(player2);
+        team2.getPlayers().add(player3);
+        team2.getPlayers().add(player4);
 
         log.info("Teams created: {} and {}", team1.getName(), team2.getName());
 
-// Setting team names for each player
-        player1.setTeam(team1.getName());
-        player2.setTeam(team1.getName());
-
-        player3.setTeam(team2.getName());
-        player4.setTeam(team2.getName());
-
-// Saving teams in the team repository
+        // Saving teams in the team repository
         teamRepository.save(team1);
         teamRepository.save(team2);
 
-// Saving players in the player repository
+        // Saving players in the player repository
         playerRepository.save(player1);
         playerRepository.save(player2);
         playerRepository.save(player3);
@@ -200,15 +191,16 @@ public class BasketLeague implements LeagueInterface {
 
         log.info("Players created and added to teams: {} and {}", team1.getName(), team2.getName());
 
-// Creating matches between the teams
+        // Creating a match between the teams
         MatchEntity match1 = new MatchEntity();
         match1.setTeam1(team1);
         match1.setTeam2(team2);
 
-// Saving the match in the match repository
+        // Saving the match in the match repository
         matchRepository.save(match1);
 
         log.info("Match created: {} vs {}", team1.getName(), team2.getName());
         log.info("Basket league created and filled with teams, players, and matches.");
     }
+
 }

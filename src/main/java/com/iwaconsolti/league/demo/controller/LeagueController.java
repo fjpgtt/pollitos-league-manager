@@ -167,20 +167,19 @@ public class LeagueController {
     }
 
     @PutMapping("/{leagueName}/team/{teamID}")
-    public String editTeam(@PathVariable String leagueName, @PathVariable int teamID, @RequestBody TeamDTO newTeamDTO) {
+    public ResponseEntity<String> editTeam(@PathVariable String leagueName, @PathVariable int teamID, @RequestBody TeamDTO newTeamDTO) {
         if (!validateService.validationLeagueName(leagueName)) {
-            return "Incorrect league: " + leagueName;
+            return ResponseEntity.badRequest().body("Incorrect league: " + leagueName);
         }
 
         if ("basketleague".equalsIgnoreCase(leagueName)) {
             basketLeague.editTeam(teamID, newTeamDTO);
-            return "Team updated in " + leagueName;
+            return ResponseEntity.ok("Team updated in " + leagueName);
         } else if ("soccerleague".equalsIgnoreCase(leagueName)) {
             soccerLeague.editTeam(teamID, newTeamDTO);
-            return "Team updated in " + leagueName;
-        }
+            return ResponseEntity.ok("Team updated in "+ leagueName);        }
 
-        return "League doesn't exist: Try soccerleague or basketleague";
+        return ResponseEntity.badRequest().body("League doesn't exist: Try soccerleague or basketleague");
     }
 
     @DeleteMapping("/{leagueName}/delete/matches")

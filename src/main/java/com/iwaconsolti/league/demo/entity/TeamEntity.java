@@ -20,7 +20,6 @@ public class TeamEntity {
     private String name;
     @Column(nullable = false)
     private int score;
-
     @OneToMany(mappedBy = "team")
     private List<PlayerEntity> players = new ArrayList<>();
 

@@ -16,6 +16,8 @@ public interface LeagueInterface {
     List<TeamDTO> getAllTeams();
     List<PlayerDTO> getAllPlayers(String teamName);
 
+    List<PlayerDTO> getPlayersByTeam(String teamName);
+
     void editPlayer(long ID, PlayerDTO playerDTO);
     void editTeam(long teamID, TeamDTO teamDTO);
 

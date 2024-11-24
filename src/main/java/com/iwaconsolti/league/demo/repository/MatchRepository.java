@@ -5,4 +5,5 @@ import com.iwaconsolti.league.demo.entity.MatchEntity;
 
 public interface MatchRepository extends JpaRepository<MatchEntity, Long> {
 
+
 }

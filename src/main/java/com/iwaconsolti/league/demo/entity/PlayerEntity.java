@@ -1,23 +1,23 @@
 package com.iwaconsolti.league.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Table(name="players")
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class PlayerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long ID;
-    @Column(nullable = false)
+
+    @Column(name="name", nullable = false)
     private String name;
 
-    @Column(name="teamName",nullable = false)
-    private String team;
+    @ManyToOne
+    @JoinColumn(name="team_id",nullable = false)
+    private TeamEntity team;
 }
