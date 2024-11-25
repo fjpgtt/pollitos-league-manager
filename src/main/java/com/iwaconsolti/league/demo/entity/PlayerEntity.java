@@ -17,7 +17,7 @@ public class PlayerEntity {
     @Column(name="name", nullable = false)
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name="team_id",nullable = false)
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name="team_id",nullable = true)
     private TeamEntity team;
 }

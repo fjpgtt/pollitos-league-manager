@@ -22,7 +22,7 @@ public interface LeagueInterface {
     void editTeam(long teamID, TeamDTO teamDTO);
 
     void deleteAllMatches();
-    void deletePlayersOfATeam(String teamName);
+    void deletePlayersByTeam(String teamName);
 
     List<MatchDTO> getMatchDTOS();
 }

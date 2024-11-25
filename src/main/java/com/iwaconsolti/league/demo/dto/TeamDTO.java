@@ -17,11 +17,13 @@ public class TeamDTO {
     private int score;
     private String name;
     private List<PlayerDTO> playerDTOS = new ArrayList<>();
+    private String league;
 
-    public TeamDTO(String name, int score, long ID) {
+    public TeamDTO(String name, int score, long ID, String league) {
         this.name = name;
         this.ID = ID;
         this.score = score;
+        this.league = league;
     }
 
 

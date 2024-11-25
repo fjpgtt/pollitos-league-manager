@@ -1,13 +1,17 @@
 package com.iwaconsolti.league.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name="matches")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class MatchEntity {
 
     @Id
@@ -21,4 +25,7 @@ public class MatchEntity {
     @ManyToOne
     @JoinColumn(name="team2", nullable = false)
     private TeamEntity team2;
+
+    public MatchEntity(TeamEntity teamONE, TeamEntity teamTWO) {
+    }
 }

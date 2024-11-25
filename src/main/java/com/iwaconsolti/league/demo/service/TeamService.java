@@ -16,13 +16,13 @@ import java.util.List;
 @Service
 @Slf4j
 public class TeamService {
-    @Value("league.teamLimit:10")
-    private final int TEAMLIMIT;
+    @Value("${league.teamLimit:10}")
+    private int TEAMLIMIT;
+
     private final TeamRepository teamRepository;
 
     @Autowired
-    public TeamService(int teamlimit, TeamRepository teamRepository) {
-        TEAMLIMIT = teamlimit;
+    public TeamService(TeamRepository teamRepository) {
         this.teamRepository = teamRepository;
     }
 
@@ -33,11 +33,13 @@ public class TeamService {
             TeamEntity teamEntity = new TeamEntity();
             teamEntity.setName(teamDTO.getName());
             teamEntity.setScore(teamDTO.getScore());
+            teamEntity.setLeague(teamDTO.getLeague());
             teamRepository.save(teamEntity);
             log.info("Team {} added to Basket League", teamDTO.getName());
         }
     }
 
+//Return all the teams doesnt matter the league.
     public List<TeamDTO> getAllTeams() {
         List<TeamEntity> teamEntities = teamRepository.findAll();
         List<TeamDTO> teamDTOS = new ArrayList<>();
@@ -51,7 +53,8 @@ public class TeamService {
             teamDTOS.add(new TeamDTO(teamEntity.getID(),
                     teamEntity.getScore(),
                     teamEntity.getName(),
-                    playerDTOS));  //Adding the players
+                    playerDTOS,
+                    teamEntity.getLeague()));  //Adding the players
         }
         log.info("Returning all the teams in the repository");
         return teamDTOS;
@@ -62,6 +65,7 @@ public class TeamService {
         if (teamEntity != null) {
             teamEntity.setName(newTeamDTO.getName());
             teamEntity.setScore(newTeamDTO.getScore());
+            teamEntity.setLeague(newTeamDTO.getLeague());
             teamRepository.save(teamEntity);
             log.info("Team with ID: {} has been updated.", teamID);
         }

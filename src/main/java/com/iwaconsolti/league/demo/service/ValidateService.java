@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class ValidateService {
-
     private final TeamRepository teamRepository;
+
 
     @Autowired
     public ValidateService(TeamRepository teamRepository) {
@@ -27,7 +27,7 @@ public class ValidateService {
     public boolean validationTeamName(String teamName, String leagueName) {
         if (validationLeagueName(leagueName)) {
             log.info("Team '{}' exists in league '{}'", teamName, leagueName);
-            return teamRepository.existsByName(teamName);
+            return teamRepository.existsByName(teamName.toLowerCase());
         }
         log.error("Invalid league name: {}", leagueName);
         return false;
