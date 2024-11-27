@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Profile("populated")
 @Service("soccerleague")
 @Slf4j
 @Getter
