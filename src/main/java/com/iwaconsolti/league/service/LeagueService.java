@@ -2,8 +2,8 @@ package com.iwaconsolti.league.service;
 
 import com.iwaconsolti.league.DTO.LeagueDetailsDTO;
 import com.iwaconsolti.league.model.LeagueModel;
-import com.iwaconsolti.league.model.PlayerModel;
 import com.iwaconsolti.league.model.MatchModel;
+import com.iwaconsolti.league.model.PlayerModel;
 import com.iwaconsolti.league.model.TeamModel;
 import com.iwaconsolti.league.repository.LeagueRepository;
 import lombok.Getter;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Profile("default")
+@Profile("populated")
 public class LeagueService {
 
     @Getter
@@ -40,7 +40,6 @@ public class LeagueService {
     public void insertLeague(LeagueModel league) {
         leagueRepository.save(league);
     }
-
 
     public List<Object[]> findAllByLeagueId(int idLeague) {
         return leagueRepository.findAllByLeagueId(idLeague);

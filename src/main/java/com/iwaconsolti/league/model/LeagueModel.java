@@ -1,10 +1,11 @@
 package com.iwaconsolti.league.model;
+
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.*;
-import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor

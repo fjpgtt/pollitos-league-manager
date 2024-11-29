@@ -1,11 +1,15 @@
 package com.iwaconsolti.league.model;
 
-import lombok.Data;
-
-
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Data
 public class PlayerModel {
 
@@ -13,7 +17,7 @@ public class PlayerModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JoinColumn(name = "idleague", referencedColumnName = "id_league")
     @Column(name = "idplayer")
-    private Long idPlayer;
+    private int idPlayer;
 
     @Column(name = "idleague")
     private int idLeague;
