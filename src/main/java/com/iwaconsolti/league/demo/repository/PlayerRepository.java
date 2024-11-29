@@ -10,10 +10,9 @@ import java.util.List;
 
 public interface PlayerRepository extends JpaRepository<PlayerEntity, Long> {
 
-    @Query("SELECT p FROM PlayerEntity p WHERE p.team = :teamName")
-    List<PlayerEntity> findByTeam(@Param("teamName") String teamName);
+    List<PlayerEntity> findByTeamName(@Param("teamName") String teamName);
 
     @Modifying
     @Query("DELETE FROM PlayerEntity p WHERE p.team.name = :teamName")
-    void deleteByTeam(@Param("teamName") String teamName);
+    void deleteByTeam_Name(@Param("teamName") String teamName);
 }

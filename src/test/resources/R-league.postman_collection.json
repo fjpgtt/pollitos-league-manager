@@ -25,7 +25,8 @@
 							"    pm.response.to.have.jsonSchema(SCHEMA);",
 							"})"
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -76,7 +77,8 @@
 							"    pm.response.to.have.jsonSchema(SCHEMA);",
 							"})"
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -85,7 +87,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"id\": 1,\n  \"name\": \"player1\",\n  \"team\": \"team2\"\n}",
+					"raw": "{\n  \"name\": \"Rogerplayer\",\n  \"team\": \"teasdasm2\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -93,7 +95,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/league/soccerleague/team3/player",
+					"raw": "http://localhost:8080/league/basketleague/team3/player",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -101,7 +103,7 @@
 					"port": "8080",
 					"path": [
 						"league",
-						"soccerleague",
+						"basketleague",
 						"team3",
 						"player"
 					]
@@ -110,7 +112,7 @@
 			"response": []
 		},
 		{
-			"name": "createMatch",
+			"name": "createMatch_",
 			"event": [
 				{
 					"listen": "test",
@@ -179,7 +181,8 @@
 							"    pm.response.to.have.jsonSchema(SCHEMA);",
 							"})"
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -199,7 +202,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/league/basketleague/team",
+					"raw": "http://localhost:8080/league/basketleague/teams",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -208,7 +211,7 @@
 					"path": [
 						"league",
 						"basketleague",
-						"team"
+						"teams"
 					]
 				}
 			},
@@ -325,6 +328,58 @@
 			"response": []
 		},
 		{
+			"name": "editTeam",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"const SCHEMA = { ",
+							"    \"type\" : \"object\",",
+							"    \"properties\" : {",
+							"        \"meals\": {\"type\": \"array\"}",
+							"    }",
+							"}",
+							"",
+							"pm.test('Schema is valid', function () {",
+							"    pm.response.to.have.jsonSchema(SCHEMA);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"TeamChanged\",\n    \"score\": 2,\n    \"ID\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/league/basketleague/team/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"league",
+						"basketleague",
+						"team",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "editPlayer",
 			"event": [
 				{
@@ -378,59 +433,7 @@
 			"response": []
 		},
 		{
-			"name": "editTeam",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"",
-							"const SCHEMA = { ",
-							"    \"type\" : \"object\",",
-							"    \"properties\" : {",
-							"        \"meals\": {\"type\": \"array\"}",
-							"    }",
-							"}",
-							"",
-							"pm.test('Schema is valid', function () {",
-							"    pm.response.to.have.jsonSchema(SCHEMA);",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"name\":\"TeamChanged\",\n    \"score\": 2,\n    \"ID\": 2\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/league/basketleague/team/2",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"league",
-						"basketleague",
-						"team",
-						"2"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "deleteMatches",
+			"name": "deleteMatches Copy",
 			"event": [
 				{
 					"listen": "test",
@@ -476,6 +479,29 @@
 						"basketleague",
 						"delete",
 						"matches"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deletePlayersByTeam",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/league/basketleague/team/TeamBasket1/players",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"league",
+						"basketleague",
+						"team",
+						"TeamBasket1",
+						"players"
 					]
 				}
 			},

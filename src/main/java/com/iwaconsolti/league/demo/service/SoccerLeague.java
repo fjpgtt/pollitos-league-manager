@@ -3,10 +3,10 @@ package com.iwaconsolti.league.demo.service;
 import com.iwaconsolti.league.demo.dto.MatchDTO;
 import com.iwaconsolti.league.demo.dto.PlayerDTO;
 import com.iwaconsolti.league.demo.dto.TeamDTO;
+import com.iwaconsolti.league.demo.model.LeagueType;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class SoccerLeague implements LeagueInterface {
     private final TeamService teamService;
     private final PlayerService playerService;
     private final MatchService matchService;
-    private final String league = "soccer league";
+    private static final LeagueType league = LeagueType.SOCCER_LEAGUE;
 
 
     @Autowired
@@ -31,25 +31,29 @@ public class SoccerLeague implements LeagueInterface {
         this.matchService = matchService;
     }
 
+    public void addingLeagueToTeam(TeamDTO teamDTO){
+        teamDTO.setLeague(league.getValue());
+    }
+
     //-----done
     @Override
     public void createTeam(TeamDTO teamDTO) {
-        teamDTO.setLeague(league);
+        addingLeagueToTeam(teamDTO);
         teamService.createTeam(teamDTO);
     }
 
     //----done
     @Override
     public void createPlayer(PlayerDTO playerDTO) {
-        playerService.createPlayer(playerDTO, league);
+        playerService.createPlayer(playerDTO, league.getValue());
     }
 
     //-----done
     @Override
     public void createMatch(TeamDTO teamDTO1, TeamDTO teamDTO2) {
-        teamDTO2.setLeague(league);
-        teamDTO1.setLeague(league);
-        matchService.createMatch(teamDTO1, teamDTO2, league);
+        addingLeagueToTeam(teamDTO1);
+        addingLeagueToTeam(teamDTO2);
+        matchService.createMatch(teamDTO1, teamDTO2);
     }
 
     //-----done
@@ -61,7 +65,7 @@ public class SoccerLeague implements LeagueInterface {
     //-----done
     @Override
     public List<PlayerDTO> getAllPlayers(String teamName) {
-        return playerService.getAllPlayers(teamName);
+        return playerService.getAllPlayersByTeam(teamName);
     }
 
     @Override
@@ -71,14 +75,14 @@ public class SoccerLeague implements LeagueInterface {
 
     //-----done
     @Override
-    public void editPlayer(long playerID, PlayerDTO playerDTO) {
-        playerService.editPlayer(playerID, playerDTO);
+    public void editPlayer(long id, PlayerDTO playerDTO) {
+        playerService.editPlayer(id, playerDTO);
     }
 
     //-----done
     @Override
     public void editTeam(long teamID, TeamDTO newTeamDTO) {
-        newTeamDTO.setLeague(league);
+        newTeamDTO.setLeague(league.getValue());
         teamService.editTeam(teamID, newTeamDTO);
     }
 

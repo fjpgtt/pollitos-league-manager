@@ -12,12 +12,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class TeamService {
     @Value("${league.teamLimit:10}")
-    private int TEAMLIMIT;
+    private int teamLimit;
 
     private final TeamRepository teamRepository;
 
@@ -26,61 +27,75 @@ public class TeamService {
         this.teamRepository = teamRepository;
     }
 
-    public void createTeam(TeamDTO teamDTO) {
-        if (teamRepository.count() >= TEAMLIMIT) {
-            log.error("You reached the max of team per league, max: {}", TEAMLIMIT);
-        } else {
+    public TeamEntity createTeam(TeamDTO teamDTO) {
+        if (teamRepository.findByName(teamDTO.getName()) != null) {
+            log.warn("Team {} already exist in the league", teamDTO.getName());
+        }
+
+        if (teamRepository.count() >= teamLimit) {
+            log.error("You reached the max of team per league, max: {}", teamLimit);
+        }
+
             TeamEntity teamEntity = new TeamEntity();
             teamEntity.setName(teamDTO.getName());
-            teamEntity.setScore(teamDTO.getScore());
             teamEntity.setLeague(teamDTO.getLeague());
             teamRepository.save(teamEntity);
-            log.info("Team {} added to Basket League", teamDTO.getName());
-        }
+            log.info("Team {} added to {}", teamDTO.getName(), teamDTO.getLeague());
+            return teamEntity;
+
     }
 
-//Return all the teams doesnt matter the league.
     public List<TeamDTO> getAllTeams() {
         List<TeamEntity> teamEntities = teamRepository.findAll();
-        List<TeamDTO> teamDTOS = new ArrayList<>();
-        for (TeamEntity teamEntity : teamEntities) {
-            // Since we cannot add TeamEntity because we need DTOS we created:
-            List<PlayerDTO> playerDTOS = new ArrayList<>();
-            for (PlayerEntity playerEntity : teamEntity.getPlayers()) {
-                playerDTOS.add(new PlayerDTO(playerEntity.getID(), playerEntity.getName(), playerEntity.getTeam().getName()));
-            }
-
-            teamDTOS.add(new TeamDTO(teamEntity.getID(),
-                    teamEntity.getScore(),
-                    teamEntity.getName(),
-                    playerDTOS,
-                    teamEntity.getLeague()));  //Adding the players
+        if (teamEntities.isEmpty()) {
+            log.warn("No teams found in the repository.");
+            return new ArrayList<>();
         }
-        log.info("Returning all the teams in the repository");
+
+        List<TeamDTO> teamDTOS = teamEntities.stream()
+                .map(teamEntity -> new TeamDTO(
+                        teamEntity.getId(),
+                        teamEntity.getName(),
+                        teamEntity.getPlayers().stream()
+                                .map(player -> new PlayerDTO(player.getId(), player.getName(), player.getTeam().getName()))
+                                .collect(Collectors.toList()),
+                        teamEntity.getLeague()))
+                .collect(Collectors.toList());
+
+//        log.info("Returning all teams in the repository.");
         return teamDTOS;
     }
 
-    public void editTeam(long teamID, TeamDTO newTeamDTO) {
+    public String editTeam(long teamID, TeamDTO newTeamDTO) {
         TeamEntity teamEntity = teamRepository.findById(teamID).orElse(null);
         if (teamEntity != null) {
             teamEntity.setName(newTeamDTO.getName());
-            teamEntity.setScore(newTeamDTO.getScore());
             teamEntity.setLeague(newTeamDTO.getLeague());
             teamRepository.save(teamEntity);
             log.info("Team with ID: {} has been updated.", teamID);
+            return "Team with ID " + teamID + " has been successfully updated.";
+
         }
-        log.info("Team with ID: {} not found", teamID);
+        log.error("Team with ID: {} not found", teamID);
+        return "Team with ID " + teamID + " not found. Please check the provided ID.";
     }
 
-    public List<PlayerDTO> getPlayersByTeam(String teamName){
+    public List<PlayerDTO> getPlayersByTeam(String teamName) {
         TeamEntity team = teamRepository.findByName(teamName);
-        List<PlayerDTO> playerDTOS = new ArrayList<>();
-        
-        for(PlayerEntity playerEntity : team.getPlayers()){
-            playerDTOS.add(new PlayerDTO(playerEntity.getID(), playerEntity.getName()));
+
+        if (team == null) {
+            log.warn("Team {} not found", teamName);
+            return new ArrayList<>();
         }
 
-        log.info("Players found in team {} : {}", teamName, playerDTOS );
+        List<PlayerDTO> playerDTOS = new ArrayList<>();
+        for (PlayerEntity playerEntity : team.getPlayers()) {
+            playerDTOS.add(new PlayerDTO(playerEntity.getId(), playerEntity.getName()));
+        }
+
+        log.info("Players found in team {} : {}", teamName, playerDTOS);
         return playerDTOS;
     }
+
+
 }

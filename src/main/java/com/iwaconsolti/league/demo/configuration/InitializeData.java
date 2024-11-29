@@ -30,14 +30,12 @@ public class InitializeData {
     public void fillBasketLeagues() {
         TeamEntity team1 = new TeamEntity();
         team1.setName("Team Basket1");
-        team1.setScore(0);
-        team1.setLeague("basket league");
+        team1.setLeague("basketleague");
         teamRepository.save(team1);
 
         TeamEntity team2 = new TeamEntity();
         team2.setName("Team Basket2");
-        team2.setScore(0);
-        team2.setLeague("basket league");
+        team2.setLeague("basketleague");
         teamRepository.save(team2);
 
         PlayerEntity player1 = new PlayerEntity();
@@ -64,10 +62,12 @@ public class InitializeData {
         log.info("Basket league initialized with teams and players.");
 
 
-        MatchEntity match1 = new MatchEntity();
-        match1.setTeam1(team1);
-        match1.setTeam2(team2);
-        matchRepository.save(match1);
+        MatchEntity match = new MatchEntity();
+        match.setTeam1(team1);
+        match.setTeam2(team2);
+        match.setScoreTeam1(1);
+        match.setScoreTeam2(2);
+        matchRepository.save(match);
 
         log.info("Match created: {} vs {}", team1.getName(), team2.getName());
     }
@@ -76,14 +76,12 @@ public class InitializeData {
     public void fillSoccerLeagues() {
         TeamEntity team3 = new TeamEntity();
         team3.setName("TeamSoccer1");
-        team3.setScore(0);
-        team3.setLeague("soccer league");
+        team3.setLeague("soccerleague");
         teamRepository.save(team3);
 
         TeamEntity team4 = new TeamEntity();
         team4.setName("TeamSoccer2");
-        team4.setScore(0);
-        team4.setLeague("soccer league");
+        team4.setLeague("soccerleague");
         teamRepository.save(team4);
 
         PlayerEntity player1 = new PlayerEntity();
@@ -113,6 +111,8 @@ public class InitializeData {
         MatchEntity match1 = new MatchEntity();
         match1.setTeam1(team3);
         match1.setTeam2(team4);
+        match1.setScoreTeam1(1);
+        match1.setScoreTeam2(2);
         matchRepository.save(match1);
 
         log.info("Match created: {} vs {}", team3.getName(), team4.getName());

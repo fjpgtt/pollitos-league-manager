@@ -12,12 +12,12 @@ import lombok.*;
 public class PlayerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long ID;
+    private long id;
 
     @Column(name="name", nullable = false)
     private String name;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name="team_id",nullable = true)
+    @ManyToOne
+    @JoinColumn(name="team_id", nullable = false)
     private TeamEntity team;
 }

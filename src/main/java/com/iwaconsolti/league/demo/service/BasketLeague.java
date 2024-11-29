@@ -3,21 +3,12 @@ package com.iwaconsolti.league.demo.service;
 import com.iwaconsolti.league.demo.dto.MatchDTO;
 import com.iwaconsolti.league.demo.dto.PlayerDTO;
 import com.iwaconsolti.league.demo.dto.TeamDTO;
-import com.iwaconsolti.league.demo.entity.MatchEntity;
-import com.iwaconsolti.league.demo.entity.PlayerEntity;
-import com.iwaconsolti.league.demo.entity.TeamEntity;
-import com.iwaconsolti.league.demo.repository.MatchRepository;
-import com.iwaconsolti.league.demo.repository.PlayerRepository;
-import com.iwaconsolti.league.demo.repository.TeamRepository;
-import jakarta.annotation.PostConstruct;
+import com.iwaconsolti.league.demo.model.LeagueType;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service("basketleague")
@@ -30,7 +21,8 @@ public class BasketLeague implements LeagueInterface {
     private final TeamService teamService;
     private final PlayerService playerService;
     private final MatchService matchService;
-    private final String league = "basket league";
+    private static final LeagueType league = LeagueType.BASKET_LEAGUE;
+
 
     @Autowired
     public BasketLeague(TeamService teamService, PlayerService playerService, MatchService matchService) {
@@ -39,10 +31,14 @@ public class BasketLeague implements LeagueInterface {
         this.matchService = matchService;
     }
 
+    public void addingLeagueToTeam(TeamDTO teamDTO){
+        teamDTO.setLeague(league.getValue());
+    }
+
     //-----done
     @Override
     public void createTeam(TeamDTO teamDTO) {
-        teamDTO.setLeague(league);
+        addingLeagueToTeam(teamDTO);
         teamService.createTeam(teamDTO);
     }
 
@@ -50,15 +46,16 @@ public class BasketLeague implements LeagueInterface {
     //----done
     @Override
     public void createPlayer(PlayerDTO playerDTO) {
-        playerService.createPlayer(playerDTO, league);
+        playerService.createPlayer(playerDTO, league.getValue());
     }
 
     //-----done
     @Override
     public void createMatch(TeamDTO teamDTO1, TeamDTO teamDTO2) {
-        teamDTO1.setLeague(league);
-        teamDTO2.setLeague(league);
-        matchService.createMatch(teamDTO1, teamDTO2, league);
+        addingLeagueToTeam(teamDTO1);
+        addingLeagueToTeam(teamDTO2);
+
+        matchService.createMatch(teamDTO1, teamDTO2);
     }
 
     //-----done
@@ -70,7 +67,7 @@ public class BasketLeague implements LeagueInterface {
     //-----donde
     @Override
     public List<PlayerDTO> getAllPlayers(String teamName) {
-        return playerService.getAllPlayers(teamName);
+        return playerService.getAllPlayersByTeam(teamName);
     }
 
     @Override
@@ -80,14 +77,14 @@ public class BasketLeague implements LeagueInterface {
 
     //-----done
     @Override
-    public void editPlayer(long playerID, PlayerDTO playerDTO) {
-        playerService.editPlayer(playerID, playerDTO);
+    public void editPlayer(long id, PlayerDTO playerDTO) {
+        playerService.editPlayer(id, playerDTO);
     }
 
     //-----done
     @Override
     public void editTeam(long teamID, TeamDTO newTeamDTO) {
-        newTeamDTO.setLeague(league);
+        addingLeagueToTeam(newTeamDTO);
         teamService.editTeam(teamID, newTeamDTO);
     }
 

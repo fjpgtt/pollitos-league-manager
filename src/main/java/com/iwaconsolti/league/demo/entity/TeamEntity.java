@@ -15,28 +15,14 @@ import java.util.List;
 public class TeamEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long ID;
+    private long id;
     @Column(name= "name", nullable = false)
     private String name;
-    @Column(name = "score", nullable = false)
-    private int score;
-    @OneToMany(mappedBy = "team")
-    private List<PlayerEntity> players = new ArrayList<>();
-    
+
     @Column(name = "league", nullable = false)
     private String league;
 
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<PlayerEntity> players = new ArrayList<>();
 
-    public TeamEntity(long id, String name, int score) {
-    }
-
-    public TeamEntity(long id, String teamName) {
-    }
-
-    public TeamEntity(String team, int score){
-
-    }
-
-    public TeamEntity(String team) {
-    }
 }

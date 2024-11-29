@@ -1,6 +1,5 @@
 package com.iwaconsolti.league.demo.dto;
 
-import jakarta.persistence.*;
 import lombok.*;
 
 @Setter

@@ -16,15 +16,21 @@ public class MatchEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long ID;
+    private long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="team1", nullable = false)
     private TeamEntity team1;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="team2", nullable = false)
     private TeamEntity team2;
+
+    @Column(name = "score_team1", columnDefinition = "INTEGER DEFAULT 0")
+    private int scoreTeam1;
+
+    @Column(name = "score_team2", columnDefinition = "INTEGER DEFAULT 0")
+    private int scoreTeam2;
 
     public MatchEntity(TeamEntity teamONE, TeamEntity teamTWO) {
     }
