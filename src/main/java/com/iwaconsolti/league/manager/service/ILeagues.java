@@ -1,39 +1,42 @@
 package com.iwaconsolti.league.manager.service;
 
-import com.iwaconsolti.league.manager.model.Matches;
-import com.iwaconsolti.league.manager.model.Players;
-import com.iwaconsolti.league.manager.model.Teams;
+import com.iwaconsolti.league.manager.persistence.model.Matches;
+import com.iwaconsolti.league.manager.persistence.model.Players;
+import com.iwaconsolti.league.manager.persistence.model.Teams;
+import com.iwaconsolti.league.manager.response.MatchesRequest;
+import com.iwaconsolti.league.manager.response.PlayersRequest;
+import com.iwaconsolti.league.manager.response.TeamsRequest;
+
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ILeagues {
 
-    Players savePlayers(Players players);
+    Players savePlayers(String leagueType, PlayersRequest playerRequest);
 
-    Players findPlayers(int id);
+    Teams saveTeams(String leagueType, TeamsRequest teamRequest);
 
-    Teams saveTeams(Teams teams);
+    Matches saveMatches(String leagueType, MatchesRequest matchesRequest);
 
-    Teams findTeams(int id);
+    Players findPlayers(String leagueType,int id);
 
-    Matches saveMatches(Matches matches);
+    Teams findTeams(String leagueType, int id);
 
     Matches findMatches(int id);
 
-    List<Matches> getMatchesTeam(String nameTeam);
+    List<MatchesRequest> getMatchesByTeam(String leagueType, int teamIdA, int teamIdB);
 
-    Players updatePlayer(int id, Players players);
+    List<PlayersRequest> getPlayersTeam(String leagueType, int teamId);
 
-    Teams updateTeam(int id, Teams team);
+    List<TeamsRequest> getAllTeams();
 
-    List<Teams> getAllTeams();
+    Players updatePlayer(String leagueType,int id, Players players);
 
-    Teams deletePlayersTeam(int teamId);
+    Teams updateTeam(String leagueType,int id, Teams team);
 
-    List<Matches> deleteAllMatches();
 
-    List<Players> getPlayersTeam(int teamId);
+    Teams deletePlayersTeam(String leagueType,int teamId);
 
+    void deleteAllMatches();
 
 }

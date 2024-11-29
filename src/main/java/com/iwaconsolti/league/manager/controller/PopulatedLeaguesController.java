@@ -1,7 +1,9 @@
 package com.iwaconsolti.league.manager.controller;
 
-import com.iwaconsolti.league.manager.model.Players;
-import com.iwaconsolti.league.manager.model.Teams;
+import com.iwaconsolti.league.manager.persistence.model.Players;
+import com.iwaconsolti.league.manager.persistence.model.Teams;
+import com.iwaconsolti.league.manager.response.PlayersRequest;
+import com.iwaconsolti.league.manager.response.TeamsRequest;
 import com.iwaconsolti.league.manager.service.ILeagues;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -10,36 +12,30 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
 @Profile("populated")
-@RestController
-@RequestMapping(value = "/leagues/{leagueType}")
 @Slf4j
 public class PopulatedLeaguesController {
 
     private ILeagues soccerLeagues;
     private ILeagues baseBallLeague;
 
-    public PopulatedLeaguesController(@Qualifier("soccerLeague") ILeagues soccerLeague, @Qualifier("baseBallLeague") ILeagues baseBallLeague) {
-        this.soccerLeagues = soccerLeague;
-        this.baseBallLeague = baseBallLeague;
-        log.info("Populated LeaguesController created");
-    }
+
 
     @PostConstruct
     public void postConstruct() {
+/*
+        TeamsRequest team1 = new TeamsRequest("Los Atlas");
+        TeamsRequest team2 = new TeamsRequest("Equipo Maravilla");
+        TeamsRequest team5 = new TeamsRequest("Los Reyes");
+        TeamsRequest team6 = new TeamsRequest("Equipo Yeah");
+        TeamsRequest team7 = new TeamsRequest("Equipo Foo");
+        TeamsRequest team8 = new TeamsRequest("Equipo Bar");
+        TeamsRequest team9 = new TeamsRequest("Equipo Basta");
+        TeamsRequest team10 = new TeamsRequest("Equipo Equipo");
+        TeamsRequest team11 = new TeamsRequest("Equipo Super");
+        TeamsRequest team12 = new TeamsRequest("Equipo 10");
+        TeamsRequest team13 = new TeamsRequest("Eq 11");
 
-        Teams team1 = new Teams("Los Atlas");
-        Teams team2 = new Teams("Equipo Maravilla");
-        Teams team5 = new Teams("Los Reyes");
-        Teams team6 = new Teams("Equipo Yeah");
-        Teams team7 = new Teams("Equipo Foo");
-        Teams team8 = new Teams("Equipo Bar");
-        Teams team9 = new Teams("Equipo Basta");
-        Teams team10 = new Teams("Equipo Equipo");
-        Teams team11 = new Teams("Equipo Super");
-        Teams team12 = new Teams("Equipo 10");
-        Teams team13 = new Teams("Eq 11");
-
-        soccerLeagues.saveTeams(team1);
+        *//*soccerLeagues.saveTeams(team1);
         soccerLeagues.saveTeams(team2);
         soccerLeagues.saveTeams(team5);
         soccerLeagues.saveTeams(team6);
@@ -49,37 +45,37 @@ public class PopulatedLeaguesController {
         soccerLeagues.saveTeams(team10);
         soccerLeagues.saveTeams(team11);
         soccerLeagues.saveTeams(team12);
-        soccerLeagues.saveTeams(team13);
+        soccerLeagues.saveTeams(team13);*//*
 
-        Teams team3 = new Teams("Dogers");
-        Teams team4 = new Teams("Yankis");
+        *//*TeamsRequest team3 = new TeamsRequest("Dogers");
+        TeamsRequest team4 = new TeamsRequest("Yankis");
 
         baseBallLeague.saveTeams(team3);
-        baseBallLeague.saveTeams(team4);
+        baseBallLeague.saveTeams(team4);*//*
 
         log.info("Teams Leagues created");
 
-        Players player1 = new Players("Maradona", team1.getId());
-        Players player2 = new Players("Leonel Messi", team1.getId());
-        Players player3 = new Players("Cristiano Ronaldo", team2.getId());
-        Players player4 = new Players("Piolin", team2.getId());
+        PlayersRequest player1 = new PlayersRequest("Maradona", 1);
+        PlayersRequest player2 = new PlayersRequest("Leonel Messi", 1);
+        PlayersRequest player3 = new PlayersRequest("Cristiano Ronaldo", 2);
+        PlayersRequest player4 = new PlayersRequest("Piolin", 2);
 
         soccerLeagues.savePlayers(player1);
         soccerLeagues.savePlayers(player2);
         soccerLeagues.savePlayers(player3);
         soccerLeagues.savePlayers(player4);
 
-        Players player5 = new Players("Valenzuela", team3.getId());
-        Players player6 = new Players("Terrenator", team3.getId());
-        Players player7 = new Players("Fiera", team3.getId());
-        Players player8 = new Players("Nakamura", team3.getId());
+        *//*PlayersRequest player5 = new PlayersRequest("Valenzuela", team3.getId());
+        PlayersRequest player6 = new PlayersRequest("Terrenator", team3.getId());
+        PlayersRequest player7 = new PlayersRequest("Fiera", team3.getId());
+        PlayersRequest player8 = new PlayersRequest("Nakamura", team3.getId());
 
         baseBallLeague.savePlayers(player5);
         baseBallLeague.savePlayers(player6);
         baseBallLeague.savePlayers(player7);
-        baseBallLeague.savePlayers(player8);
+        baseBallLeague.savePlayers(player8);*//*
 
-        log.info("Players Leagues created");
+        log.info("Players Leagues created");*/
 
     }
 
