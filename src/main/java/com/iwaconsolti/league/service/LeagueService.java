@@ -1,55 +1,71 @@
 package com.iwaconsolti.league.service;
 
+import com.iwaconsolti.league.DTO.LeagueDetailsDTO;
 import com.iwaconsolti.league.model.LeagueModel;
-import com.iwaconsolti.league.model.MatchModel;
 import com.iwaconsolti.league.model.PlayerModel;
+import com.iwaconsolti.league.model.MatchModel;
 import com.iwaconsolti.league.model.TeamModel;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
+import com.iwaconsolti.league.repository.LeagueRepository;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Profile("default")
 public class LeagueService {
+
     @Getter
     private final LeagueModel soccerLeague;      // Bean
     @Getter
     private final LeagueModel basketballLeague;  // Bean
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final LeagueRepository leagueRepository;
 
     public LeagueService(
             @Qualifier("soccer") LeagueModel soccerLeague,
-            @Qualifier("Basketball") LeagueModel basketballLeague
+            @Qualifier("Basketball") LeagueModel basketballLeague,
+            LeagueRepository leagueRepository
     ) {
         this.soccerLeague = soccerLeague;
         this.basketballLeague = basketballLeague;
+        this.leagueRepository = leagueRepository;
     }
 
     @Transactional
-    public void insertLeague(LeagueModel league, int idLeague) {
-
-
+    public void insertLeague(LeagueModel league) {
+        leagueRepository.save(league);
     }
 
-    public List<LeagueModel> findAllLeagues() {
-        return entityManager.createQuery(
-                        "SELECT l FROM LeagueModel l", LeagueModel.class)
-                .getResultList();
+
+    public List<Object[]> findAllByLeagueId(int idLeague) {
+        return leagueRepository.findAllByLeagueId(idLeague);
     }
 
-    public LeagueModel findLeagueById(int idLeague) {
-        return entityManager.createQuery(
-                        "SELECT l FROM LeagueModel l WHERE l.idLeague = :idLeague", LeagueModel.class)
-                .setParameter("idLeague", idLeague)
-                .getSingleResult();
-    }
 
+    public LeagueDetailsDTO getLeagueDetailsDTO(int idLeague) {
+        List<Object[]> results = findAllByLeagueId(idLeague);
+
+        List<PlayerModel> players = new ArrayList<>();
+        List<MatchModel> matches = new ArrayList<>();
+        List<TeamModel> teams = new ArrayList<>();
+
+
+        for (Object[] result : results) {
+            PlayerModel player = (PlayerModel) result[0];
+            MatchModel match = (MatchModel) result[1];
+            TeamModel team = (TeamModel) result[2];
+
+            players.add(player);
+            matches.add(match);
+            teams.add(team);
+        }
+
+        LeagueDetailsDTO leagueDetailsDTO = new LeagueDetailsDTO(players, matches, teams);
+        return leagueDetailsDTO;
+    }
 }

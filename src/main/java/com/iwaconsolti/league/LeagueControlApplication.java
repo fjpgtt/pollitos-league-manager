@@ -1,5 +1,9 @@
 package com.iwaconsolti.league;
 
+import com.iwaconsolti.league.DTO.LeagueDetailsDTO;
+import com.iwaconsolti.league.model.MatchModel;
+import com.iwaconsolti.league.model.PlayerModel;
+import com.iwaconsolti.league.model.TeamModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +42,21 @@ public class LeagueControlApplication implements CommandLineRunner {
 			if (answer == 1) {
 				listsFilled = true;
 				logger.info("Inserting the leagues into the beans...");
-				leagueService.insertLeague(leagueService.getSoccerLeague(), 1);
-				leagueService.insertLeague(leagueService.getBasketballLeague(), 2);
+				leagueService.insertLeague(leagueService.getSoccerLeague());
+				leagueService.insertLeague(leagueService.getBasketballLeague());
 
 				logger.info("Leagues inserted successfully");
 				logger.debug("Soccer League: {}", leagueService.getSoccerLeague());
 				logger.debug("Basketball League: {}", leagueService.getBasketballLeague());
+
+
+				logger.info("Displaying details for Soccer League...");
+				LeagueDetailsDTO soccerLeagueDetails = leagueService.getLeagueDetailsDTO(1);
+				printLeagueDetails(soccerLeagueDetails);
+
+				logger.info("Displaying details for Basketball League...");
+				LeagueDetailsDTO basketballLeagueDetails = leagueService.getLeagueDetailsDTO(2);
+				printLeagueDetails(basketballLeagueDetails);
 
 			} else if (answer == 2) {
 				logger.info("Waiting for the lists to be filled...");
@@ -53,6 +66,23 @@ public class LeagueControlApplication implements CommandLineRunner {
 			}
 		}
 		scanner.close();
+	}
+
+	private void printLeagueDetails(LeagueDetailsDTO leagueDetailsDTO) {
+		logger.info("Players in the league:");
+		for (PlayerModel player : leagueDetailsDTO.getPlayers()) {
+			logger.info("Player: {}", player);
+		}
+
+		logger.info("Matches in the league:");
+		for (MatchModel match : leagueDetailsDTO.getMatches()) {
+			logger.info("Match: {}", match);
+		}
+
+		logger.info("Teams in the league:");
+		for (TeamModel team : leagueDetailsDTO.getTeams()) {
+			logger.info("Team: {}", team);
+		}
 	}
 
 	public static void main(String[] args) {

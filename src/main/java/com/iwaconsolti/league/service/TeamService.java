@@ -1,88 +1,50 @@
 package com.iwaconsolti.league.service;
 
-import com.iwaconsolti.league.Config.TeamConfig;
-import com.iwaconsolti.league.model.PlayerModel;
 import com.iwaconsolti.league.model.TeamModel;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
-import jakarta.transaction.Transactional;
+import com.iwaconsolti.league.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import jakarta.transaction.Transactional;
 import java.util.List;
-
+import java.util.Optional;
 
 @Service
 public class TeamService {
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    private final PlayerService playerService;
-    private final TeamConfig teamConfig;
+    private final TeamRepository teamRepository;
 
     @Autowired
-    public TeamService(PlayerService playerService, TeamConfig teamConfig) {
-        this.playerService = playerService;
-        this.teamConfig = teamConfig;
+    public TeamService(TeamRepository teamRepository) {
+        this.teamRepository = teamRepository;
     }
 
     @Transactional
-    public TeamModel insertTeam(TeamModel team) {
-        String insertTeamSql = "INSERT INTO team (IDTEAM, ID_LEAGUE, TEAMNAME) VALUES (:idteam, :idleague, :name)";
-        Query query = entityManager.createNativeQuery(insertTeamSql);
-        query.setParameter("idteam", team.getIdteam());
-        query.setParameter("idleague", team.getIdLeague());
-        query.setParameter("name", team.getTeamname());
-        query.executeUpdate();
-        return team;
+    public TeamModel addTeam(TeamModel team) {
+        return teamRepository.save(team);
     }
 
-    public List<TeamModel> getTeam() {
-        return entityManager.createQuery("SELECT t FROM TeamModel t", TeamModel.class)
-                .getResultList();
+    public List<TeamModel> getAllTeams() {
+        return teamRepository.findAll();
     }
 
     @Transactional
-    public TeamModel updateTeam(int id, TeamModel team) {
-        TeamModel existingTeam = entityManager.createQuery(
-                        "SELECT t FROM TeamModel t WHERE t.idteam = :id", TeamModel.class)
-                .setParameter("id", id)
-                .getSingleResult();
+    public TeamModel updateTeam(Long teamId, TeamModel team) {
+        Optional<TeamModel> existingTeam = teamRepository.findById(teamId);
 
-        if (existingTeam != null) {
-            existingTeam.setIdteam(team.getIdteam());
-            existingTeam.setTeamname(team.getTeamname());
-            entityManager.merge(existingTeam);
-            return existingTeam;
-        }
-        return null;
-    }
-
-    @Transactional
-    public boolean deleteTeam(int id) {
-        TeamModel existingTeam = entityManager.createQuery(
-                        "SELECT t FROM TeamModel t WHERE t.idteam = :id", TeamModel.class)
-                .setParameter("id", id)
-                .getSingleResult();
-
-        if (existingTeam != null) {
-            entityManager.remove(existingTeam);
-            return true;
-        }
-        return false;
-    }
-
-    public TeamModel getTeamById(int teamId) {
-        try {
-            return entityManager.createQuery(
-                            "SELECT t FROM TeamModel t WHERE t.idteam = :teamId", TeamModel.class)
-                    .setParameter("teamId", teamId)
-                    .getSingleResult();
-        } catch (Exception e) {
+        if (existingTeam.isPresent()) {
+            TeamModel updatedTeam = existingTeam.get();
+            updatedTeam.setTeamname(team.getTeamname());
+            updatedTeam.setIdLeague(team.getIdLeague());
+            return teamRepository.save(updatedTeam);
+        } else {
             return null;
         }
+    }
+
+    @Transactional
+    public boolean deleteAllPlayersByTeamId(Long teamId) {
+        teamRepository.deletePlayersByTeamId(teamId);
+    return true;
     }
 }

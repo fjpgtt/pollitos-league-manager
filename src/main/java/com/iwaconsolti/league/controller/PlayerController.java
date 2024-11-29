@@ -27,12 +27,8 @@ public class PlayerController {
         return service.insertPlayer(playermodel );
     }
     @PutMapping("/{id}")
-    public PlayerModel updateTeam (@PathVariable int id, @RequestBody PlayerModel player) {
+    public PlayerModel updatePlayer (@PathVariable int id, @RequestBody PlayerModel player) {
         return service.updatePlayer(id, player);
-    }
-    @DeleteMapping("/{id}")
-    public int deleteTeam (@PathVariable int id) {
-        return service.deletePlayersByTeamId(id);
     }
 
 }

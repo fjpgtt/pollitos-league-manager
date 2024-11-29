@@ -24,22 +24,22 @@ public class TeamController {
     @GetMapping("/")
     public ResponseEntity<List<TeamModel>> getTeam(){
         log.info("enter");
-        return ResponseEntity.ok(service.getTeam());
+        return ResponseEntity.ok(service.getAllTeams());
     }
 
     @PostMapping("/")
     public TeamModel addTeam(@RequestBody TeamModel teammodel) {
-        return service.insertTeam(teammodel );
+        return service.addTeam(teammodel );
     }
 
     @PutMapping("/{id}")
-    public TeamModel putTeam(@PathVariable int id, @RequestBody TeamModel team) {
+    public TeamModel putTeam(@PathVariable long id, @RequestBody TeamModel team) {
         return service.updateTeam(id, team);
     }
 
     @DeleteMapping("/{id}")
-    public boolean DeletePlayer(@PathVariable int id) {
-        return service.deleteTeam(id);
+    public boolean DeletePlayer(@PathVariable long id) {
+        return service.deleteAllPlayersByTeamId(id);
     }
 
 }
