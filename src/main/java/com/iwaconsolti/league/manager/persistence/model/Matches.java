@@ -28,7 +28,7 @@ public class Matches {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id_a", insertable = false, updatable = false)
     private Teams teamA;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "team_id_b", insertable = false, updatable = false)
     private Teams teamB;
 

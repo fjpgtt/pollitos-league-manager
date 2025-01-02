@@ -1,5 +1,6 @@
 package com.iwaconsolti.league.manager.service.impl;
 
+import com.iwaconsolti.league.manager.exceptions.*;
 import com.iwaconsolti.league.manager.persistence.model.Matches;
 import com.iwaconsolti.league.manager.persistence.model.Players;
 import com.iwaconsolti.league.manager.persistence.model.Teams;
@@ -34,13 +35,18 @@ public abstract class ALeague implements ILeagues {
 
     @Override
     public Players savePlayers(String leagueType, PlayersRequest playerRequest) {
-        Teams team = findTeams(playerRequest.getLeagueType(),playerRequest.getTeamId());
+        Teams team = findTeams(leagueType, playerRequest.getTeamId());
+
         if (team == null) {
-            log.warn("Team not found");
-            log.info("the team id {}", playerRequest.getTeamId());
-            return null;
+            log.warn("Team id {} not found", playerRequest.getTeamId());
+            log.warn("League {} not found", leagueType);
+            throw new TeamNotFoundException("Team not found");
+        } else if (playerRequest.getName() == null || playerRequest.getName().trim().isEmpty()) {
+            log.warn("Player name required!!!");
+            throw new NameRequiredException("Player name required!!!");
         }
-        Players player = new Players(playerRequest.getName(), playerRequest.getTeamId());
+
+        Players player = new Players(leagueType, playerRequest.getName(), playerRequest.getTeamId());
         log.debug("Saving player {}", playerRequest);
         player = playersRepository.save(player);
 
@@ -48,138 +54,194 @@ public abstract class ALeague implements ILeagues {
             team.setPlayers(new ArrayList<>());
         }
         team.getPlayers().add(player);
+
         teamsRepository.save(team);
 
         return player;
     }
 
+    private int teamsSize(String leagueType) {
+        return teamsRepository.findByLeagueType(leagueType).size();
+    }
+
     @Override
-    public Teams saveTeams(String leagueType,TeamsRequest teamRequest) {
-        if (teamsRepository.count() >= teamLimit) {
+    public Teams saveTeams(String leagueType, TeamsRequest teamRequest) {
+
+        if (teamsSize(leagueType) >= teamLimit) {
             log.warn("Team limit exceeded");
-            return null;
+            throw new TeamLimitExceededException("You have reached the maximum limit of teams allowed.");
+        } else if (teamRequest.getName() == null || teamRequest.getName().trim().isEmpty()) {
+            log.warn("Team name required!!!");
+            throw new NameRequiredException("Team name required!!!");
         }
 
         log.debug("Saving team {}", teamRequest);
 
-        Teams team = new Teams(teamRequest.getName());
+        Teams team = new Teams(leagueType, teamRequest.getName());
 
         return teamsRepository.save(team);
     }
 
     @Override
-    public Matches saveMatches(String leagueType,MatchesRequest matchesRequest) {
+    public Matches saveMatches(String leagueType, MatchesRequest matchesRequest) {
 
-        if (findTeams(matchesRequest.getLeagueType(), matchesRequest.getTeamIdA()) == null && findTeams(matchesRequest.getLeagueType(), matchesRequest.getTeamIdB()) == null) {
+        if (findTeams(leagueType, matchesRequest.getTeamIdA()) == null || findTeams(leagueType, matchesRequest.getTeamIdB()) == null) {
             log.warn("Team not found");
-            return null;
+            throw new TeamNotFoundException("Team not found");
         }
 
         log.debug("Saving match {}", matchesRequest);
-        Matches match = new Matches(matchesRequest.getLeagueType(), matchesRequest.getTeamIdA(), matchesRequest.getTeamIdB(),
+        Matches match = new Matches(leagueType, matchesRequest.getTeamIdA(), matchesRequest.getTeamIdB(),
                 matchesRequest.getScoreTeamA(), matchesRequest.getScoreTeamB());
         return matchesRepository.save(match);
     }
 
     @Override
-    public Players findPlayers(String leagueType,int id) {
-        return playersRepository.findById(id).orElse(null);
+    public Players findPlayers(String leagueType, int id) {
+        return playersRepository.findPlayersByIdAndLeagueType(id, leagueType).orElse(null);
     }
 
     @Override
-    public Teams findTeams(String leagueType,int id) {
-        return teamsRepository.findById(id).orElse(null);
-    }
-
-    public Matches findMatches(int id) {
-        return matchesRepository.findById(id).orElse(null);
+    public PlayersRequest getPlayerById(String leagueType, int id) {
+        Players player = findPlayers(leagueType, id);
+        if (player != null) {
+            return new PlayersRequest(player.getId(), player.getName(), player.getTeamId());
+        } else {
+            throw new PlayerNotFoundException("Player not found");
+        }
     }
 
     @Override
-    public List<MatchesRequest> getMatchesByTeam(String leagueType,int teamIdA, int teamIdB) {
+    public Teams findTeams(String leagueType, int id) {
+        return teamsRepository.findByIdAndLeagueType(id, leagueType).orElse(null);
+    }
+
+    @Override
+    public TeamsRequest getTeamById(String leagueType, int id) {
+        Teams team = findTeams(leagueType, id);
+        if (team != null) {
+            return new TeamsRequest(team.getId(), team.getName());
+        } else {
+            throw new TeamNotFoundException("Team not found");
+        }
+    }
+
+    public List<Matches> findMatches(int teamIdA, int teamIdB) {
+        return matchesRepository.findByTeamIdAOrTeamIdB(teamIdA, teamIdB);
+    }
+
+    @Override
+    public List<MatchesRequest> getMatchesByTeam(String leagueType, int teamIdA, int teamIdB) {
         List<MatchesRequest> matchesRequests = new ArrayList<>();
 
-        for (Matches match : matchesRepository.findByTeamIdAOrTeamIdB(teamIdA, teamIdB)) {
-            String teamNameA = match.getTeamA().getName();
-            String teamNameB = match.getTeamB().getName();
+        for (Matches match : findMatches(teamIdA, teamIdB)) {
+            if (match.getLeagueType().equals(leagueType)) {
+                String teamNameA = match.getTeamA().getName();
+                String teamNameB = match.getTeamB().getName();
 
-            matchesRequests.add(new MatchesRequest(match.getIdMatch(), match.getLeagueType(), match.getTeamIdA(), teamNameA,
-                    match.getTeamIdB(), teamNameB, match.getTeamScoreA(), match.getTeamScoreB()));
+                matchesRequests.add(new MatchesRequest(match.getIdMatch(), match.getLeagueType(), match.getTeamIdA(), teamNameA,
+                        match.getTeamIdB(), teamNameB, match.getTeamScoreA(), match.getTeamScoreB()));
+            } else {
+                throw new MatchNotFoundException("Match not found");
+            }
         }
         return matchesRequests;
     }
 
     @Override
-    public List<PlayersRequest> getPlayersTeam(String leagueType,int teamId) {
+    public List<PlayersRequest> getPlayersTeam(String leagueType, int teamId) {
         List<PlayersRequest> playersRequests = new ArrayList<>();
 
         for (Players player : playersRepository.findAll()) {
-            if (player.getTeamId() == teamId) {
-                playersRequests.add(new PlayersRequest(player.getId(), player.getLeagueType(), player.getName(), player.getTeamId()));
+            if (player.getLeagueType().equals(leagueType)) {
+                if (player.getTeamId() == teamId) {
+                    playersRequests.add(new PlayersRequest(player.getId(),
+                            player.getLeagueType(), player.getName(), player.getTeamId()));
+                }
             }
         }
         return playersRequests;
     }
 
     @Override
-    public List<TeamsRequest> getAllTeams() {
+    public List<TeamsRequest> getAllTeams(String leagueType) {
         List<TeamsRequest> teamsRequest = new ArrayList<>();
 
         for (Teams team : teamsRepository.findAll()) {
-            List<String> playerNames = team.getPlayers()
-                    .stream()
-                    .map(Players::getName)
-                    .toList();
-            teamsRequest.add(new TeamsRequest(team.getId(), team.getLeagueType(), team.getName(), playerNames));
+            if (team.getLeagueType().equals(leagueType)) {
+                List<String> playerNames = team.getPlayers()
+                        .stream()
+                        .map(Players::getName)
+                        .toList();
+                teamsRequest.add(new TeamsRequest(team.getId(), team.getLeagueType(), team.getName(), playerNames));
+            }
         }
-
         return teamsRequest;
     }
 
-
     @Override
-    public Players updatePlayer(String leagueType,int id, Players player) {
-        if (!playersRepository.existsById(id)) {
-            log.warn("Player with id {} not found", id);
-            return null;
-        } else if (teamsRepository.existsById(player.getTeamId())) {
-            log.warn("Team with id {} not found", player.getTeamId());
-            return null;
+    public Players updatePlayer(String leagueType, int id, Players player) {
+        Players existingPlayer = findPlayers(leagueType, id);
+
+        if (existingPlayer == null) {
+            log.warn("Player id {} not found", id);
+            throw new PlayerNotFoundException("Player not found");
+        } else if (findTeams(leagueType, player.getTeamId()) == null) {
+            log.warn("Team id {} not found", player.getTeamId());
+            throw new TeamNotFoundException("Team not found");
+        } else if (player.getName() == null || player.getName().trim().isEmpty()) {
+            log.warn("Player name required!!!");
+            throw new NameRequiredException("Player name required!!!");
         }
 
-        return playersRepository.save(player);
+        existingPlayer.setName(player.getName());
+        existingPlayer.setTeamId(player.getTeamId());
+
+        return playersRepository.save(existingPlayer);
     }
 
     @Override
-    public Teams updateTeam(String leagueType,int id, Teams team) {
-        if (!teamsRepository.existsById(id)) {
-            log.warn("Team with id {} not found", id);
-            return null;
+    public Teams updateTeam(String leagueType, int teamId, Teams team) {
+        Teams existingTeam = findTeams(leagueType, teamId);
+
+        if (existingTeam == null) {
+            log.warn("Team with id {} not found", teamId);
+            throw new TeamNotFoundException("Team not found");
+        } else if (team.getName() == null || team.getName().trim().isEmpty()) {
+            log.warn("Player name required!!!");
+            throw new NameRequiredException("Player name required!!!");
         }
 
-        return teamsRepository.save(team);
+        existingTeam.setName(team.getName());
+
+        return teamsRepository.save(existingTeam);
     }
 
     @Override
-    public Teams deletePlayersTeam(String leagueType,int teamId) {
-        Teams team = teamsRepository.findById(teamId).orElse(null);
+    public Teams deletePlayersByTeam(String leagueType, int teamId) {
+        Teams team = findTeams(leagueType, teamId);
         if (team == null) {
-            log.warn("Team not found");
-            return null;
+            log.warn("Team with id {} not found", teamId);
+            throw new TeamNotFoundException("Team not found");
         }
-
         List<Players> players = team.getPlayers();
-        if (players != null) {
-            playersRepository.deleteAll(players);
-            team.setPlayers(new ArrayList<>());
-            teamsRepository.save(team);
+        if (players == null || players.isEmpty()) {
+            throw new PlayerNotFoundException("Player not found");
         }
+        playersRepository.deleteAll(players);
+        team.setPlayers(new ArrayList<>());
+        teamsRepository.save(team);
+
         return team;
     }
 
     @Override
-    public void deleteAllMatches() {
-        matchesRepository.deleteAll();
+    public void deleteAllMatches(String leagueType) {
+        List<Matches> matches = matchesRepository.findByLeagueType(leagueType);
+        if (matches == null || matches.isEmpty()) {
+            throw new MatchNotFoundException("Match not found");
+        }
+        matchesRepository.deleteAll(matches);
     }
 
 }

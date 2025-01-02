@@ -1,6 +1,5 @@
 package com.iwaconsolti.league.manager.response;
 
-import com.iwaconsolti.league.manager.persistence.model.Players;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +18,11 @@ public class TeamsRequest {
     private List<String> playerNames = new ArrayList<>();
 
     public TeamsRequest(String name) {
+        this.name = name;
+    }
+
+    public TeamsRequest(int id, String name) {
+        this.id = id;
         this.name = name;
     }
 

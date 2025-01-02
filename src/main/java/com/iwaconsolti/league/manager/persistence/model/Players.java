@@ -1,5 +1,6 @@
 package com.iwaconsolti.league.manager.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,9 +23,11 @@ public class Players {
 
     @ManyToOne
     @JoinColumn(name = "team_id", insertable = false, updatable = false)
+    @JsonIgnoreProperties("players")
     private Teams team;
 
-    public Players(String name, int teamId) {
+    public Players(String leagueType, String name, int teamId) {
+        this.leagueType = leagueType;
         this.name = name;
         this.teamId = teamId;
     }

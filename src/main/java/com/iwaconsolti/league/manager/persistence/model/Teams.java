@@ -21,10 +21,11 @@ public class Teams {
     private String leagueType;
     @Column(nullable = false)
     private String name;
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
     private List<Players> players = new ArrayList<>();
 
-    public Teams(String name) {
+    public Teams(String leagueType, String name) {
+        this.leagueType = leagueType;
         this.name = name;
     }
 

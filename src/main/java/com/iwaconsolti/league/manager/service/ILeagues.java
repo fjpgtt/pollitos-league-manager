@@ -6,8 +6,6 @@ import com.iwaconsolti.league.manager.persistence.model.Teams;
 import com.iwaconsolti.league.manager.response.MatchesRequest;
 import com.iwaconsolti.league.manager.response.PlayersRequest;
 import com.iwaconsolti.league.manager.response.TeamsRequest;
-
-
 import java.util.List;
 
 public interface ILeagues {
@@ -20,23 +18,27 @@ public interface ILeagues {
 
     Players findPlayers(String leagueType,int id);
 
+    PlayersRequest getPlayerById(String leagueType,int id);
+
     Teams findTeams(String leagueType, int id);
 
-    Matches findMatches(int id);
+    TeamsRequest getTeamById(String leagueType, int id);
+
+    List<Matches> findMatches(int teamIdA, int teamIdB);
 
     List<MatchesRequest> getMatchesByTeam(String leagueType, int teamIdA, int teamIdB);
 
     List<PlayersRequest> getPlayersTeam(String leagueType, int teamId);
 
-    List<TeamsRequest> getAllTeams();
+    List<TeamsRequest> getAllTeams(String leagueType);
 
     Players updatePlayer(String leagueType,int id, Players players);
 
     Teams updateTeam(String leagueType,int id, Teams team);
 
 
-    Teams deletePlayersTeam(String leagueType,int teamId);
+    Teams deletePlayersByTeam(String leagueType, int teamId);
 
-    void deleteAllMatches();
+    void deleteAllMatches(String leagueType);
 
 }
