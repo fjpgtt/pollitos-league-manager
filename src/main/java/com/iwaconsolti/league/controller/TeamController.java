@@ -27,6 +27,11 @@ public class TeamController {
         return ResponseEntity.ok(service.getAllTeams());
     }
 
+    @GetMapping("/league{idLeague}")
+    public ResponseEntity<List<TeamModel>> getTeambyLeague(@PathVariable Long idLeague){
+        log.info("enter");
+        return ResponseEntity.ok(service.getTeambyLeague(idLeague));
+    }
     @PostMapping("/")
     public TeamModel addTeam(@RequestBody TeamModel teammodel) {
         return service.addTeam(teammodel );

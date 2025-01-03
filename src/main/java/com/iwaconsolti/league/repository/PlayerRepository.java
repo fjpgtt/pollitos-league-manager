@@ -10,6 +10,9 @@ import java.util.List;
 
 @Repository
 public interface PlayerRepository extends JpaRepository<PlayerModel, Integer> {
-    @Query("SELECT p FROM PlayerModel p WHERE p.idTeam = :teamId")
-    List<PlayerModel> findPlayersByTeamId(Integer teamId);
+    @Query("SELECT p FROM PlayerModel p WHERE p.idLeague = :idLeague")
+    List<PlayerModel> findPlayersByIdleague(Integer idLeague);
+
+    @Query("SELECT p FROM PlayerModel p WHERE p.idTeam = :teamId AND p.idLeague = :idLeague")
+    List<PlayerModel> findPlayersByTeamAndLeagueId(Integer teamId, Integer idLeague);
 }

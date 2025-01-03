@@ -18,9 +18,13 @@ public class PlayerController {
     public PlayerController(PlayerService service) {
         this.service = service;
     }
-    @GetMapping("/{teamid}")
-    public ResponseEntity<List<PlayerModel>> getPlayer(@PathVariable int teamid){
-        return ResponseEntity.ok(service.getPlayersByTeam(teamid));
+    @GetMapping("/{idLeague}")
+    public ResponseEntity<List<PlayerModel>> getPlayer(@PathVariable int idLeague){
+        return ResponseEntity.ok(service.getPlayersByIdleague(idLeague));
+    }
+    @GetMapping("/{teamid}/{idLeague}")
+    public ResponseEntity<List<PlayerModel>> getPlayerleagueid(@PathVariable int teamid,@PathVariable  int idLeague){
+        return ResponseEntity.ok(service.getPlayersByidleague(teamid, idLeague));
     }
     @PostMapping("/")
     public PlayerModel addPlayer(@RequestBody PlayerModel playermodel) {

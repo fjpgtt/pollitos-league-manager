@@ -28,6 +28,10 @@ public class TeamService {
         return teamRepository.findAll();
     }
 
+    public List<TeamModel> getTeambyLeague(Long idLeague) {
+        return teamRepository.findLeague(idLeague);
+    }
+
     @Transactional
     public TeamModel updateTeam(Long teamId, TeamModel team) {
         Optional<TeamModel> existingTeam = teamRepository.findById(teamId);

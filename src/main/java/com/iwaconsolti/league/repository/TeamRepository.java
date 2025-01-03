@@ -16,6 +16,10 @@ public interface TeamRepository extends JpaRepository<TeamModel, Long> {
     @Query("SELECT t FROM TeamModel t")
     List<TeamModel> findAllTeams();
 
+    @Query("SELECT t FROM TeamModel t WHERE t.idLeague = :idLeague")
+    List<TeamModel> findLeague(@Param("idLeague") Long idLeague);
+
+
     @Modifying
     @Query("DELETE FROM PlayerModel p WHERE p.idTeam = :teamId")
     void deletePlayersByTeamId(@Param("teamId") Long teamId);

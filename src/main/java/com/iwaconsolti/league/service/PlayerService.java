@@ -27,7 +27,12 @@ public class PlayerService {
             return playerRepository.save(existingPlayer);
         }).orElse(null);
     }
-    public List<PlayerModel> getPlayersByTeam(Integer teamId) {
-        return playerRepository.findPlayersByTeamId(teamId);
+    public List<PlayerModel> getPlayersByIdleague(Integer idLeague) {
+        return playerRepository.findPlayersByIdleague(idLeague);
     }
+
+    public List<PlayerModel> getPlayersByidleague(Integer teamId, Integer idLeague) {
+        return playerRepository.findPlayersByTeamAndLeagueId(teamId, idLeague);
+    }
+
 }

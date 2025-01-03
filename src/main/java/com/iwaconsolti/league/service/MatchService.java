@@ -17,8 +17,8 @@ public class MatchService {
     public MatchService(MatchRepository matchRepository) {
         this.matchRepository = matchRepository;
     }
-    public List<MatchModel> getMatches() {
-        return matchRepository.findAllMatches();
+    public List<MatchModel> getMatches(Integer idLeague) {
+        return matchRepository.findAllMatchesByLeague(idLeague);
     }
     @Transactional
     public MatchModel insertMatch(MatchModel match) {
@@ -29,7 +29,10 @@ public class MatchService {
         matchRepository.deleteAllMatches();
         return true;
     }
-    public List<MatchModel> getMatchById(int teamId) {
-        return matchRepository.findMatchesByTeamId(teamId);
+    public List<MatchModel> getMatchById(int teamId, int idLeague) {
+        return matchRepository.findMatchesByTeamIdAndLeagueId(teamId, idLeague);
+    }
+    public List<MatchModel> getMatchByIdLeague(int IdLeague) {
+        return matchRepository.findAllMatchesByLeague(IdLeague);
     }
 }

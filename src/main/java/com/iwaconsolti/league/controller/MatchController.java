@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/Match")
 @Slf4j
 public class MatchController {
@@ -19,9 +20,9 @@ public class MatchController {
         this.service = service;
     }
 
-    @GetMapping("/team/{id}")
-    public List<MatchModel> getMatchById(@PathVariable int id) {
-        return service.getMatchById(id);
+    @GetMapping("/team/{id}/{idLeague}")
+    public List<MatchModel> getMatchById(@PathVariable int id, @PathVariable int idLeague) {
+        return service.getMatchById(id, idLeague);
     }
 
     @PostMapping("/")
@@ -33,4 +34,10 @@ public class MatchController {
     public boolean DeleteMatch() {
         return service.deleteAllMatches();
     }
+
+    @GetMapping("/team/league{idLeague}")
+    public List<MatchModel> getMatchByIdLeague(@PathVariable int idLeague) {
+        return service.getMatchByIdLeague(idLeague);
+    }
+
 }
