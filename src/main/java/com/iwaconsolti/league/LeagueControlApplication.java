@@ -18,8 +18,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import java.util.Scanner;
-
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "com.iwaconsolti.league.repository")
 @EntityScan(basePackages = "com.iwaconsolti.league.model")
@@ -30,9 +28,9 @@ public class LeagueControlApplication implements CommandLineRunner {
 	private static final Logger logger = LoggerFactory.getLogger(LeagueControlApplication.class);
 	private final LeagueService leagueService;
 
-
 	@Autowired
 	private ApplicationContext context;
+
 	@Autowired
 	public LeagueControlApplication(LeagueService leagueService) {
 		this.leagueService = leagueService;
@@ -40,42 +38,20 @@ public class LeagueControlApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		String activeProfile = System.getProperty("spring.profiles.active");
-		if (activeProfile == null) {
-			activeProfile = System.getenv("SPRING_PROFILES_ACTIVE");
-		}
+		DataInitializer dataInitializer = context.getBean(DataInitializer.class);
+		dataInitializer.init();
 
-		Scanner scanner = new Scanner(System.in);
-		boolean listsFilled = false;
+		logger.info("Inserting the leagues into the beans...");
+		leagueService.insertLeague(leagueService.getSoccerLeague());
+		leagueService.insertLeague(leagueService.getBasketballLeague());
 
-		while (!listsFilled) {
-			logger.debug("Waiting for user input to verify if the lists are filled...");
-			logger.info("Do you define a manual filling? (1 = Yes, 2 = No): ");
+		logger.info("Displaying details for Soccer League...");
+		LeagueDetailsDTO soccerLeagueDetails = leagueService.getLeagueDetailsDTO(1);
+		printLeagueDetails(soccerLeagueDetails);
 
-			int answer = scanner.nextInt();
-			if (answer == 1) {
-				DataInitializer dataInitializer = context.getBean(DataInitializer.class);
-				dataInitializer.init();
-
-			} else if (answer == 2) {
-
-			} else {
-				logger.warn("Invalid option entered: {}. Please enter 1 for Yes or 2 for No.", answer);
-			}
-			listsFilled = true;
-			logger.info("Inserting the leagues into the beans...");
-			leagueService.insertLeague(leagueService.getSoccerLeague());
-			leagueService.insertLeague(leagueService.getBasketballLeague());
-
-			logger.info("Displaying details for Soccer League...");
-			LeagueDetailsDTO soccerLeagueDetails = leagueService.getLeagueDetailsDTO(1);
-			printLeagueDetails(soccerLeagueDetails);
-
-			logger.info("Displaying details for Basketball League...");
-			LeagueDetailsDTO basketballLeagueDetails = leagueService.getLeagueDetailsDTO(2);
-			printLeagueDetails(basketballLeagueDetails);
-		}
-		scanner.close();
+		logger.info("Displaying details for Basketball League...");
+		LeagueDetailsDTO basketballLeagueDetails = leagueService.getLeagueDetailsDTO(2);
+		printLeagueDetails(basketballLeagueDetails);
 	}
 
 	private void printLeagueDetails(LeagueDetailsDTO leagueDetailsDTO) {
