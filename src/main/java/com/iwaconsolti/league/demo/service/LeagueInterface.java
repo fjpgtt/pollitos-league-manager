@@ -16,11 +16,13 @@ public interface LeagueInterface {
     List<TeamDTO> getAllTeams();
     List<PlayerDTO> getAllPlayers(String teamName);
 
-    void editPlayer(int ID, PlayerDTO playerDTO);
-    void editTeam(int teamID, TeamDTO teamDTO);
+    List<PlayerDTO> getPlayersByTeam(String teamName);
+
+    void editPlayer(long id, PlayerDTO playerDTO);
+    void editTeam(long teamID, TeamDTO teamDTO);
 
     void deleteAllMatches();
-    void deletePlayersOfATeam(String teamName);
+    void deletePlayersByTeam(String teamName);
 
     List<MatchDTO> getMatchDTOS();
 }

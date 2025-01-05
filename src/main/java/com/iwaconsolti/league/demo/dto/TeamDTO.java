@@ -1,8 +1,6 @@
 package com.iwaconsolti.league.demo.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,20 +8,13 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class TeamDTO {
-    private int ID;
-    private int score;
+    private long id;
     private String name;
     private List<PlayerDTO> playerDTOS = new ArrayList<>();
-
-    public TeamDTO(String name, int score, int ID) {
-        this.name = name;
-        this.ID = ID;
-        this.score = score;
-    }
-
-    public void addPlayer(PlayerDTO playerDTO){
-        playerDTOS.add(playerDTO);
-    }
+    private String league;
 
 }
+
