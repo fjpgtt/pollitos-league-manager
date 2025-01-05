@@ -32,6 +32,9 @@ public class MatchEntity {
     @Column(name = "score_team2", columnDefinition = "INTEGER DEFAULT 0")
     private int scoreTeam2;
 
-    public MatchEntity(TeamEntity teamONE, TeamEntity teamTWO) {
+    // Constructor para inicializar equipos
+    public MatchEntity(TeamEntity team1, TeamEntity team2) {
+        this.team1 = team1;
+        this.team2 = team2;
     }
 }

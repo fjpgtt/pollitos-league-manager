@@ -16,5 +16,5 @@ public class TeamDTO {
     private List<PlayerDTO> playerDTOS = new ArrayList<>();
     private String league;
 
-
 }
+

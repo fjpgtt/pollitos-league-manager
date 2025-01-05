@@ -28,15 +28,19 @@ public class MatchService {
     }
 
     public void createMatch(TeamDTO teamDTO1, TeamDTO teamDTO2) {
+        if (teamDTO1 == null || teamDTO2 == null) {
+            throw new IllegalArgumentException("Ambos equipos son obligatorios para crear un partido.");
+        }
+
         TeamEntity teamONE = teamRepository.findByName(teamDTO1.getName());
         TeamEntity teamTWO = teamRepository.findByName(teamDTO2.getName());
 
         if (teamONE == null) {
-            log.info("Team one doesn't exist.");
+            log.info("Team 1 doesn't exist.");
             teamONE = teamService.createTeam(teamDTO1);
         }
         if(teamTWO == null){
-            log.info("Team one doesn't exist.");
+            log.info("Team 2 doesn't exist.");
             teamTWO = teamService.createTeam(teamDTO2);
         }
 
@@ -44,7 +48,11 @@ public class MatchService {
             log.error("Teams have different leagues {} and {}", teamDTO1.getLeague(), teamDTO2.getLeague());
         }
 
-        MatchEntity matchEntity = new MatchEntity(teamONE, teamTWO);
+        MatchEntity matchEntity = new MatchEntity();
+        matchEntity.setTeam1(teamONE);
+        matchEntity.setTeam1(teamTWO);
+        matchEntity.setScoreTeam1(0);
+        matchEntity.setScoreTeam2(0);
         matchRepository.save(matchEntity);
         log.info("New Match has been created: {} vs {}", teamONE.getName(), teamTWO.getName());
     }

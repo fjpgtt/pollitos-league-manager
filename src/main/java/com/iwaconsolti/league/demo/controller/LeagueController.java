@@ -3,11 +3,8 @@ package com.iwaconsolti.league.demo.controller;
 import com.iwaconsolti.league.demo.dto.MatchDTO;
 import com.iwaconsolti.league.demo.dto.PlayerDTO;
 import com.iwaconsolti.league.demo.dto.TeamDTO;
-import com.iwaconsolti.league.demo.entity.TeamEntity;
-import com.iwaconsolti.league.demo.repository.TeamRepository;
 import com.iwaconsolti.league.demo.service.LeagueInterface;
 import com.iwaconsolti.league.demo.service.ValidateService;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,11 +12,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/{leagueName}")
+@CrossOrigin(origins = "http://localhost:4200")
 @Slf4j
 public class LeagueController {
 
@@ -34,52 +35,78 @@ public class LeagueController {
         this.validateService = validateService;
     }
 
+    @GetMapping("/api/saludo")
+    public Map<String, String> obtenerSaludo() {
+        Map<String, String> respuesta = new HashMap<>();
+        respuesta.put("mensaje", "Hola desde el backend con Spring Boot!");
+        return respuesta;
+    }
+
     @PostMapping("/team")
-    public ResponseEntity<String> createTeam(@PathVariable String leagueName, @RequestBody TeamDTO teamDTO) {
+    public ResponseEntity<Map<String, String>> createTeam(@PathVariable String leagueName, @RequestBody TeamDTO teamDTO) {
         if (validateService.validationLeagueName(leagueName)) {
             LeagueInterface leagueService = validateService.getLeagueService(leagueName);
             leagueService.createTeam(teamDTO);
-            return ResponseEntity.ok("Team " + teamDTO.getName() + " added to " + leagueName);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Team " + teamDTO.getName() + " added to " + leagueName);
+            return ResponseEntity.ok(response); // Devolvemos JSON
         }
-        return ResponseEntity.badRequest().body("League does not exists");
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", "League does not exists");
+        return ResponseEntity.badRequest().body(errorResponse); // Devolvemos JSON
     }
 
     @PostMapping("/{team}/player")
-    public ResponseEntity<String> createPlayer(@PathVariable String leagueName, @PathVariable String team, @RequestBody PlayerDTO playerDTO) {
+    public ResponseEntity<Map<String,String>> createPlayer(@PathVariable String leagueName, @PathVariable String team, @RequestBody PlayerDTO playerDTO) {
         // Validate league
+        Map<String, String> response = new HashMap<>();
+
         if (!validateService.validationLeagueName(leagueName)) {
             log.error("Incorrect league");
-            return ResponseEntity.badRequest().body("Please try with \"soccerleague\" or \"basketleague\"");
+            response.put("message:","Please try with \"soccerleague\" or \"basketleague\"");
+            return ResponseEntity.badRequest().body(response);
         }
         // Validate team
         if (validateService.validationTeamName(team, leagueName)) {
             log.error("Incorrect Team");
-            return ResponseEntity.badRequest().body("Please try with a valid team name");
+            response.put("message:","Incorrect team");
+            return ResponseEntity.badRequest().body(response);
         }
 
         // Creating playerDTO
         if ("basketleague".equalsIgnoreCase(leagueName)) {
             basketLeague.createPlayer(playerDTO);
-            return ResponseEntity.ok("Player " + playerDTO.getName() + " added to " + leagueName + " in team: " + team);
+            response.put("message", "Player " + playerDTO.getName() + " added to " + leagueName + " in team: " + team);
+            return ResponseEntity.ok(response);
         } else if ("soccerleague".equalsIgnoreCase(leagueName))
             soccerLeague.createPlayer(playerDTO);
-        return ResponseEntity.ok("Player " + playerDTO.getName() + " added to " + leagueName + " in team: " + team);
+            response.put("message", "Player " + playerDTO.getName() + " added to " + leagueName + " in team: " + team);
+        return ResponseEntity.ok(response);
 
     }
+
     @PostMapping("/match")
-    public ResponseEntity<String> createMatch(@PathVariable String leagueName, @RequestBody MatchDTO matchDTO) {
+    public ResponseEntity<Map<String, String>> createMatch(@PathVariable String leagueName, @RequestBody MatchDTO matchDTO) {
+        Map<String, String> response = new HashMap<>();
         if (!validateService.validationLeagueName(leagueName)) {
-            return ResponseEntity.badRequest().body("Incorrect league " + leagueName);
+            response.put("Message", "Incorrect league" + leagueName);
+            return ResponseEntity.badRequest().body(response);
         }
+
+        matchDTO.getTeamDTO2().setLeague(leagueName);
+        matchDTO.getTeamDTO1().setLeague(leagueName);
 
         if ("basketleague".equalsIgnoreCase(leagueName)) {
             basketLeague.createMatch(matchDTO.getTeamDTO1(), matchDTO.getTeamDTO2());
-            return ResponseEntity.ok("Match created in " + leagueName + " " + matchDTO.getTeamDTO1() + " + " + matchDTO.getTeamDTO2());
+            response.put("message", "Match created in " + leagueName + " " + matchDTO.getTeamDTO1() + " + " + matchDTO.getTeamDTO2());
+            return ResponseEntity.ok(response);
         } else if ("soccerleague".equalsIgnoreCase(leagueName)) {
             soccerLeague.createMatch(matchDTO.getTeamDTO1(), matchDTO.getTeamDTO2());
-            return ResponseEntity.ok("Match created in " + leagueName + " " + matchDTO.getTeamDTO1() + " + " + matchDTO.getTeamDTO2());
+            response.put("message", "Match created in " + leagueName + " " + matchDTO.getTeamDTO1() + " + " + matchDTO.getTeamDTO2());
+            return ResponseEntity.ok(response);
         }
-        return ResponseEntity.ok("League doesn't exist: Try soccerleague or basketleague");
+        response.put("message", "League doesn't exist: Try soccerleague or basketleague");
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/teams")
@@ -150,7 +177,7 @@ public class LeagueController {
         return ResponseEntity.ok(matches);
     }
 
-    @PutMapping("/player/{playerId}")
+    @PutMapping("/{teamName}/player/{playerId}")
     public ResponseEntity<String> editPlayer(@PathVariable String leagueName, @PathVariable String teamName, @PathVariable int playerId, @RequestBody PlayerDTO playerDTO) {
         if (!validateService.validationLeagueName(leagueName)) {
             log.error("Incorrect league: {}", leagueName);
@@ -172,9 +199,12 @@ public class LeagueController {
     }
 
     @PutMapping("/team/{teamID}")
-    public ResponseEntity<String> editTeam(@PathVariable String leagueName, @PathVariable long teamID, @RequestBody TeamDTO newTeamDTO) {
+    public ResponseEntity<Map<String, String>> editTeam(@PathVariable String leagueName, @PathVariable long teamID, @RequestBody TeamDTO newTeamDTO) {
+        Map<String, String> response = new HashMap<>();
+
         if (!validateService.validationLeagueName(leagueName)) {
-            return ResponseEntity.badRequest().body("Incorrect league: " + leagueName);
+            response.put("message", "Incorrect league: " + leagueName);
+            return ResponseEntity.badRequest().body(response);
         }
 
         if ("basketleague".equalsIgnoreCase(leagueName)) {
@@ -182,7 +212,9 @@ public class LeagueController {
         } else if ("soccerleague".equalsIgnoreCase(leagueName)) {
             soccerLeague.editTeam(teamID, newTeamDTO);
         }
-        return ResponseEntity.ok("Team " + newTeamDTO.getName() + " updated in " + leagueName);
+
+        response.put("message", "Team " + newTeamDTO.getName() + " updated in " + leagueName);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete/matches")
@@ -201,9 +233,11 @@ public class LeagueController {
     }
 
     @DeleteMapping("/team/{teamName}/players")
-    public ResponseEntity<String> deletePlayersFromTeam(@PathVariable String leagueName, @PathVariable String teamName) {
+    public ResponseEntity<Map<String,String>> deletePlayersFromTeam(@PathVariable String leagueName, @PathVariable String teamName) {
+        Map<String, String> response = new HashMap<>();
         if (!validateService.validationLeagueName(leagueName)) {
-            return ResponseEntity.badRequest().body("Incorrect league: " + leagueName);
+            response.put("message:","Incorrect league: "+ leagueName);
+            return ResponseEntity.badRequest().body(response);
         }
 
         if ("basketleague".equalsIgnoreCase(leagueName)) {
@@ -211,6 +245,7 @@ public class LeagueController {
         } else if ("soccerleague".equalsIgnoreCase(leagueName)) {
             soccerLeague.deletePlayersByTeam(teamName);
         }
-        return ResponseEntity.ok("All players from team: " + teamName + " deleted in " + leagueName);
+        response.put("message", "All players from team: " + teamName + " were deleted correctly");
+        return ResponseEntity.ok(response);
     }
 }

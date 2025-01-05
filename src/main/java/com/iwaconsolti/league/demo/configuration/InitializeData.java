@@ -111,9 +111,17 @@ public class InitializeData {
         MatchEntity match1 = new MatchEntity();
         match1.setTeam1(team3);
         match1.setTeam2(team4);
-        match1.setScoreTeam1(1);
-        match1.setScoreTeam2(2);
+        match1.setScoreTeam1(10);
+        match1.setScoreTeam2(20);
+
+        MatchEntity match2 = new MatchEntity();
+        match2.setTeam1(team4);
+        match2.setTeam2(team3);
+        match2.setScoreTeam1(5);
+        match2.setScoreTeam2(6);
+
         matchRepository.save(match1);
+        matchRepository.save(match2);
 
         log.info("Match created: {} vs {}", team3.getName(), team4.getName());
     }
